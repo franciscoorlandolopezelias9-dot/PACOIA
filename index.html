@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PACO IA 💬</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* 🚪 MODAL DE BIENVENIDA MODERNO (3 MÉTODOS DE REGISTRO) */
+        #auth-modal {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(33, 37, 41, 0.5);
+            backdrop-filter: blur(15px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .auth-box {
+            background-color: #ffffff;
+            border-radius: 28px;
+            padding: 35px 25px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.12);
+            border: 1px solid #e9ecef;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .auth-header img {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #2a5298;
+            margin: 0 auto 12px auto;
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.15);
+        }
+
+        .auth-header h2 {
+            font-size: 1.5rem;
+            color: #1e3c72;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .auth-header p {
+            font-size: 0.9rem;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
+        /* Contenedor dinámico de vistas */
+        .auth-view {
+            display: none; /* Ocultas por defecto */
+            flex-direction: column;
+            gap: 16px;
+            text-align: left;
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* Forzamos que la vista inicial empiece visible */
+        #view-start {
+            display: flex;
+        }
+
+        .auth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Estilo general para los botones de autenticación */
+        .auth-btn {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            border: 1px solid #dee2e6;
+            background-color: #ffffff;
+            color: #212529;
+        }
+
+        .auth-btn:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .auth-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Botón de celular destacado levemente */
+        .btn-phone {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #1e293b;
+        }
+        
+        .btn-phone:hover {
+            background-color: #e2e8f0;
+            border-color: #94a3b8;
+        }
+
+        /* Estilos paraInputs y Formularios Internos del Modal */
+        .auth-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .auth-form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .auth-input:focus {
+            border-color: #2a5298;
+        }
+
+        .btn-submit-auth {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-submit-auth:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-back-auth {
+            background: none;
+            border: none;
+            color: #2a5298;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .auth-error-msg {
+            color: #e03131;
+            font-size: 0.85rem;
+            text-align: center;
+            display: none;
+            font-weight: 500;
+        }
+
+        /* 🌟 BARRA SUPERIOR MODERNA CON INTEGRACIÓN DE LOGO */
+        header {
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e9ecef;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #2a5298;
+            box-shadow: 0 2px 8px rgba(42, 82, 152, 0.15);
+        }
+
+        .header-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        header h1 {
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #2b8a3e;
+            background-color: #ebfbee;
+            padding: 2px 8px;
+            border-radius: 20px;
+            border: 1px solid #d3f9d8;
+            width: fit-content;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #40c057;
+            border-radius: 50%;
+            animation: pulse 1.8s infinite;
+        }
+
+        .clear-btn {
+            background-color: transparent;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .clear-btn:hover {
+            background-color: #f1f3f5;
+            color: #dc3545;
+            border-color: #ffc9c9;
+        }
+
+        /* 💬 ÁREA DE CHAT */
+        #chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 850px;
+            width: 100%;
+            margin: 0 auto;
+            scroll-behavior: smooth;
+        }
+
+        #chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-container::-webkit-scrollbar-thumb {
+            background-color: #dee2e6;
+            border-radius: 10px;
+        }
+
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 14px 20px;
+            border-radius: 20px;
+            line-height: 1.6;
+            font-size: 0.98rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            word-break: break-word;
+        }
+
+        .user-wrapper {
+            align-items: flex-end;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #2b5298, #1e3c72);
+            color: #ffffff;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.15);
+        }
+
+        .paco-wrapper {
+            align-items: flex-start;
+        }
+
+        .paco-message {
+            background-color: #ffffff;
+            color: #343a40;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+
+        .sender-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .user-wrapper .sender-name { color: #495057; margin-right: 4px; }
+        .paco-wrapper .sender-name { color: #2a5298; margin-left: 4px; }
+
+        .chat-captured-img {
+            max-width: 100%;
+            border-radius: 14px;
+            margin-top: 10px;
+            border: 1px solid #e9ecef;
+            display: block;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .suggestions-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+            max-width: 85%;
+        }
+
+        .suggestion-btn {
+            background-color: #ffffff;
+            color: #2a5298;
+            border: 1px solid #e2e8f0;
+            padding: 9px 16px;
+            border-radius: 16px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .suggestion-btn:hover {
+            background-color: #f1f5f9;
+            border-color: #2a5298;
+            transform: translateY(-1px);
+        }
+
+        /* 🛠️ BARRA DE ENTRADA CONTENEDORA DE MENÚ FLOTANTE */
+        #input-container {
+            padding: 20px;
+            max-width: 850px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* 🇸🇻 MENÚ DESPLEGABLE INTERACTIVO Y LIMPIO */
+        .paco-dropdown-menu {
+            display: none;
+            position: absolute;
+            bottom: 85px;
+            left: 30px;
+            background-color: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 8px;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 500;
+            animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 220px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            font-size: 0.92rem;
+            font-weight: 500;
+            color: #495057;
+            transition: all 0.15s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f5f9;
+            color: #2a5298;
+        }
+
+        .input-box {
+            display: flex;
+            background-color: #ffffff;
+            border-radius: 30px;
+            padding: 8px 10px 8px 16px;
+            align-items: center;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            gap: 12px;
+        }
+
+        .input-box:focus-within {
+            border-color: #2a5298;
+            box-shadow: 0 10px 35px rgba(42, 82, 152, 0.08);
+        }
+
+        .flag-toggle-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+            user-select: none;
+        }
+
+        .flag-toggle-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .flag-image {
+            width: 28px;
+            height: 20px;
+            object-fit: cover;
+            border-radius: 3px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        }
+
+        #user-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #212529;
+            font-size: 1rem;
+            padding: 8px 4px;
+            outline: none;
+        }
+
+        #user-input::placeholder { color: #adb5bd; }
+
+        #send-btn {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: #ffffff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.2);
+        }
+
+        #send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(42, 82, 152, 0.3);
+        }
+
+        .hidden-input { display: none; }
+
+        /* 📸 MODAL DE CÁMARA */
+        #camera-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(33, 37, 41, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .camera-box {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 25px;
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            border: 1px solid #e9ecef;
+        }
+
+        #video-preview {
+            width: 100%;
+            border-radius: 16px;
+            background-color: #212529;
+            transform: scaleX(-1);
+        }
+
+        .camera-controls { display: flex; gap: 12px; width: 100%; }
+        .cam-btn { flex: 1; padding: 14px; border-radius: 16px; border: none; font-weight: 600; cursor: pointer; font-size: 0.95rem; transition: all 0.2s ease; }
+        #capture-btn { background: linear-gradient(135deg, #2a5298, #1e3c72); color: #ffffff; box-shadow: 0 4px 12px rgba(42, 82, 152, 0.2); }
+        #close-camera-btn { background-color: #e9ecef; color: #495057; }
+        #close-camera-btn:hover { background-color: #dee2e6; }
+
+        /* ⏳ ANIMACIONES */
+        .typing-dots { display: flex; gap: 6px; padding: 8px 4px; align-items: center; }
+        .typing-dots span { width: 8px; height: 8px; background-color: #2a5298; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(64, 192, 87, 0.4); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(64, 192, 87, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(64, 192, 87, 0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div id="auth-modal">
+        <div class="auth-box">
+            
+            <div class="auth-header">
+                <img src="ChatGPT Image 21 jun 2026, 13_34_45.png" alt="PACO IA Logo">
+                <h2 id="auth-modal-title">¡Qué onda, bicho!</h2>
+                <p id="auth-modal-desc">Crea tu cuenta o inicia sesión en PACO IA para guardar tus chats y tareas de forma segura.</p>
+            </div>
+            
+            <div id="view-start" class="auth-view">
+                <div class="auth-buttons">
+                    <button class="auth-btn" onclick="switchAuthView('view-networks', 'Google')">
+                        <span class="auth-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18">
+                                <path fill="#EA4335" d="M5.266 9.765l1.463 1.134a3 3 0 0 1 4.542-3.13l3.414-2.645A7.96 7.96 0 0 0 12 4a7.98 7.98 0 0 0-6.734 5.765z"/>
+                                <path fill="#4285F4" d="M23.49 12.275a9.42 9.42 0 0 0-.154-1.84H12v3.48h6.45a5.53 5.53 0 0 1-2.4 3.63l3.352 2.6a9.5 9.5 0 0 0 4.088-7.87z"/>
+                                <path fill="#FBBC05" d="M4.144 15.658A7.95 7.95 0 0 1 3.5 12c0-1.308.23-2.557.644-3.715L3.325 7.15A11.94 11.94 0 0 0 2 12c0 1.74.373 3.394.969 4.904l1.175-1.246z"/>
+                                <path fill="#34A853" d="M12 20a7.96 7.96 0 0 0 5.163-1.892l-3.351-2.6a3 3 0 0 1-4.633-1.63L5.702 15A7.98 7.98 0 0 0 12 20z"/>
+                            </svg>
+                        </span>
+                        Continuar con Google
+                    </button>
+
+                    <button class="auth-btn" onclick="switchAuthView('view-networks', 'Apple')">
+                        <span class="auth-icon">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                                <path d="M12.152 6.591c-.482 0-1.478-.546-2.671-.546-1.564 0-3.007.884-3.812 2.285-1.623 2.822-.416 6.996 1.157 9.263.771 1.109 1.678 2.35 2.884 2.304 1.158-.047 1.597-.749 2.996-.749 1.398 0 1.803.749 3.018.725 1.238-.023 2.039-1.132 2.793-2.235.875-1.277 1.237-2.512 1.258-2.576-.026-.013-2.417-.926-2.442-3.693-.021-2.317 1.897-3.432 1.919-3.445-1.084-1.587-2.766-1.767-3.364-1.81-1.5-.122-2.885.733-3.736.733zm2.593-4.246c.643-.779 1.077-1.856.958-2.345-.815.033-1.804.542-2.389 1.223-.5.58-.938 1.677-.82 2.835.91.071 1.839-.461 2.251-1.123z"/>
+                            </svg>
+                        </span>
+                        Continuar con Apple
+                    </button>
+
+                    <button class="auth-btn btn-phone" onclick="switchAuthView('view-phone')">
+                        <span class="auth-icon">📱</span>
+                        Usar Número de Celular
+                    </button>
+                </div>
+            </div>
+
+            <div id="view-networks" class="auth-view">
+                <form onsubmit="validateNetworkAuth(event)">
+                    <div class="auth-form-group">
+                        <label for="auth-email">Correo Electrónico</label>
+                        <input type="email" id="auth-email" class="auth-input" placeholder="bicho@ejemplo.com" required>
+                    </div>
+                    <div class="auth-form-group" style="margin-top: 10px;">
+                        <label for="auth-pass">Contraseña de acceso</label>
+                        <input type="password" id="auth-pass" class="auth-input" placeholder="••••••••" required>
+                    </div>
+                    <p id="net-error" class="auth-error-msg" style="margin-top: 10px;">Por favor, rellena los campos requeridos.</p>
+                    <button type="submit" class="btn-submit-auth" style="margin-top: 15px;">Iniciar Sesión</button>
+                </form>
+                <button class="btn-back-auth" onclick="resetAuthViews()">Volver al menú</button>
+            </div>
+
+            <div id="view-phone" class="auth-view">
+                <form onsubmit="sendMockSMS(event)">
+                    <div class="auth-form-group">
+                        <label for="auth-tel">Número de Celular</label>
+                        <input type="tel" id="auth-tel" class="auth-input" placeholder="+503 7000-0000" required>
+                    </div>
+                    <button type="submit" class="btn-submit-auth" style="margin-top: 15px;">Enviar Código OTP</button>
+                </form>
+                <button class="btn-back-auth" onclick="resetAuthViews()">Volver al menú</button>
+            </div>
+
+            <div id="view-otp" class="auth-view">
+                <form onsubmit="validateOTP(event)">
+                    <div class="auth-form-group">
+                        <label for="auth-code">Código de Verificación</label>
+                        <input type="text" id="auth-code" class="auth-input" maxlength="6" placeholder="000000" required style="text-align: center; letter-spacing: 6px; font-size: 22px; font-weight: bold;">
+                    </div>
+                    <p id="otp-error" class="auth-error-msg" style="margin-top: 10px;">Código incorrecto. Volvé a intentarlo, bicho.</p>
+                    <button type="submit" class="btn-submit-auth" style="margin-top: 15px;">Verificar Código</button>
+                </form>
+                <button class="btn-back-auth" onclick="switchAuthView('view-phone')">Cambiar número</button>
+            </div>
+
+        </div>
+    </div>
+
+    <header>
+        <div class="header-title-container">
+            <img src="ChatGPT Image 21 jun 2026, 13_34_45.png" class="header-logo" alt="PACO IA Logo">
+            <div class="header-meta">
+                <h1>PACO IA</h1>
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    Tu compa en todo
+                </div>
+            </div>
+        </div>
+        <button class="clear-btn" onclick="clearChat()">
+            🧹 Limpiar chat
+        </button>
+    </header>
+
+    <div id="chat-container">
+        <div class="message-wrapper paco-wrapper">
+            <div class="sender-name">PACO IA</div>
+            <div class="message paco-message">
+                ¡Qué onda, bicho! 🇸🇻 Aquí está tu compa PACO IA listo para lo que sea. Ya no solo nos quedamos con las tareas; hoy sí vení a contarme de todo. Si andás estresado y ocupás desahogarte como con un psicólogo, si querés resolver un problema de tu vida diaria, platicar un rato o si ocupás ayuda con cualquier materia, aquí ando para escucharte y darte soluciones al suave. ¿Qué traés en mente hoy? ¡Soltalo sin miedo!
+            </div>
+            <div class="suggestions-container">
+                <button class="suggestion-btn" onclick="sendSuggested('Ando bien estresado, ocupo desahogarme 🧠')">Ando bien estresado, ocupo desahogarme 🧠</button>
+                <button class="suggestion-btn" onclick="sendSuggested('Necesito un consejo para tomar una decisión 🤔')">Necesito un consejo para tomar una decisión 🤔</button>
+                <button class="suggestion-btn" onclick="sendSuggested('Ayudame con una duda general o tarea 💡')">Ayudame con una duda general o tarea 💡</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="camera-modal">
+        <div class="camera-box">
+            <h3 style="color: #1e3c72; font-weight: 600;">Cámara en Vivo 📸</h3>
+            <video id="video-preview" autoplay playsinline></video>
+            <div class="camera-controls">
+                <button id="close-camera-btn" class="cam-btn" onclick="stopCamera()">Cancelar</button>
+                <button id="capture-btn" class="cam-btn" onclick="capturePhoto()">Capturar Foto</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="input-container">
+        <div id="paco-menu" class="paco-dropdown-menu">
+            <button class="dropdown-item" onclick="handleMenuAction('camera')">📸 Tomar foto en vivo</button>
+            <button class="dropdown-item" onclick="handleMenuAction('gallery')">🖼️ Subir desde Galería</button>
+            <button class="dropdown-item" onclick="handleMenuAction('file')">📁 Importar Archivo (Max 5GB)</button>
+        </div>
+
+        <div class="input-box">
+            <button class="flag-toggle-btn" id="flag-btn" title="Opciones multimedia" onclick="togglePacoMenu(event)">
+                <img src="https://flagcdn.com/w40/sv.png" class="flag-image" alt="Bandera El Salvador">
+            </button>
+
+            <input type="file" id="gallery-input" class="hidden-input" accept="image/*" onchange="handleMediaUpload(this, 'Imagen cargada desde galería 🖼️')">
+            <input type="file" id="file-input" class="hidden-input" onchange="handleFileUpload(this)">
+
+            <input type="text" id="user-input" placeholder="Platiquemos, desahogate, pedime un consejo..." autocomplete="off">
+            <button id="send-btn" onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = "AQ.Ab8RN6L5JTpexJ-CvaSpM-ydIrWTBNT6L0AN29eoSCD61TcCbw"; 
+
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const pacoMenu = document.getElementById('paco-menu');
+        
+        const cameraModal = document.getElementById('camera-modal');
+        const videoPreview = document.getElementById('video-preview');
+        let streamInstance = null;
+
+        let chatHistory = [];
+        
+        // Lógica de control de Código OTP global simulado
+        let generatedMockCode = "";
+
+        const systemInstruction = "Tu nombre es PACO IA, un asistente virtual inteligente, amigo y confidente integral de Soyapango, El Salvador. Tu propósito es ser el compañero ideal del usuario en TODOS los ámbitos de su vida: puedes actuar como un psicólogo o consejero empático cuando necesite desahogarse de sus problemas o emociones cotidianas, un asesor amigable para situaciones de su vida diaria, y también mantener tu gran capacidad para resolver dudas sobre cualquier materia escolar o general. Hablas usando caliche salvadoreño de manera cercana, madura, respetuosa y con mucha empatía. Sabes escuchar activamente. PROHIBICIÓN ABSOLUTA DE FORMATO: No uses asteriscos, almohadillas, guiones largos, ni líneas de ningún tipo en tus respuestas. Para resaltar un título o concept importante, colócalo en una línea limpia con un emoji descriptivo al principio. ENLACES: Escribe URLs completas de forma limpia sin encerrarlas en símbolos. REQUISITOS OBLIGATORIOS:\n1. Explica o platica de manera súper ordenada usando saltos de línea y emojis.\n2. Al final de tu respuesta, haz una pregunta amigable que invite a seguir conversando o profundizando.\n3. En la última línea de tu respuesta, pon exactamente tres opciones de respuestas sugeridas cortas que el usuario podría responder, separadas por el carácter '|'. No agregues nada más en esa línea.";
+
+        // =========================================================
+        // 🔑 NAVEGACIÓN Y VALIDACIÓN DEL MODAL ACCESO
+        // =========================================================
+        function switchAuthView(viewId, networkProvider = "") {
+            // Ocultamos todas las secciones internas del modal
+            const views = document.querySelectorAll('.auth-view');
+            views.forEach(v => v.style.display = 'none');
+
+            // Modificamos encabezados dinámicamente si es por Google/Apple
+            const mainTitle = document.getElementById('auth-modal-title');
+            const mainDesc = document.getElementById('auth-modal-desc');
+
+            if (viewId === 'view-networks') {
+                mainTitle.innerText = `Acceso con ${networkProvider}`;
+                mainDesc.innerText = `Ingresa tus credenciales para sincronizar tu cuenta de ${networkProvider}.`;
+            } else if (viewId === 'view-phone') {
+                mainTitle.innerText = "Acceso por Celular";
+                mainDesc.innerText = "Ingresa tu número móvil para enviarte un SMS automático de verificación.";
+            } else if (viewId === 'view-otp') {
+                mainTitle.innerText = "Código de Seguridad";
+                mainDesc.innerText = "Introduce los 6 números que te enviamos para desbloquear PACO IA.";
+            }
+
+            // Mostramos la vista correcta
+            document.getElementById(viewId).style.display = 'flex';
+        }
+
+        function resetAuthViews() {
+            document.getElementById('auth-modal-title').innerText = "¡Qué onda, bicho!";
+            document.getElementById('auth-modal-desc').innerText = "Crea tu cuenta o inicia sesión en PACO IA para guardar tus chats y tareas de forma segura.";
+            switchAuthView('view-start');
+            
+            // Limpiamos errores visuales
+            document.getElementById('net-error').style.display = 'none';
+            document.getElementById('otp-error').style.display = 'none';
+        }
+
+        function closeAuthModal() {
+            alert("¡Identificación completa! Bienvenido bicho.");
+            document.getElementById('auth-modal').style.display = 'none';
+        }
+
+        function validateNetworkAuth(event) {
+            event.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+
+            if (email.trim() !== "" && pass.trim() !== "") {
+                closeAuthModal();
+            } else {
+                document.getElementById('net-error').style.display = 'block';
+            }
+        }
+
+        function sendMockSMS(event) {
+            event.preventDefault();
+            const tel = document.getElementById('auth-tel').value;
+
+            if (tel.trim() !== "") {
+                // Generamos código de 6 números al azar
+                generatedMockCode = Math.floor(100000 + Math.random() * 900000).toString();
+                
+                alert("Procesando canales y simulando envío SMS/WhatsApp...");
+                alert(`[SMS SIMULADO] Tu código de verificación de 6 dígitos para PACO IA es: ${generatedMockCode}`);
+                
+                switchAuthView('view-otp');
+            }
+        }
+
+        function validateOTP(event) {
+            event.preventDefault();
+            const codeInput = document.getElementById('auth-code').value;
+
+            if (codeInput === generatedMockCode) {
+                closeAuthModal();
+            } else {
+                document.getElementById('otp-error').style.display = 'block';
+            }
+        }
+
+        // =========================================================
+        // 💬 CONTROL MULTIMEDIA Y OPERACIONES DEL CHAT
+        // =========================================================
+        function togglePacoMenu(event) {
+            event.stopPropagation();
+            if (pacoMenu.style.display === 'flex') {
+                pacoMenu.style.display = 'none';
+            } else {
+                pacoMenu.style.display = 'flex';
+            }
+        }
+
+        function handleMenuAction(action) {
+            pacoMenu.style.display = 'none';
+            if (action === 'camera') startCamera();
+            if (action === 'gallery') document.getElementById('gallery-input').click();
+            if (action === 'file') document.getElementById('file-input').click();
+        }
+
+        document.addEventListener('click', (e) => {
+            if (pacoMenu.style.display === 'flex' && !pacoMenu.contains(e.target) && !document.getElementById('flag-btn').contains(e.target)) {
+                pacoMenu.style.display = 'none';
+            }
+        });
+
+        async function startCamera() {
+            cameraModal.style.display = 'flex';
+            try {
+                streamInstance = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false
+                });
+                videoPreview.srcObject = streamInstance;
+            } catch (err) {
+                console.error("Error al abrir la cámara: ", err);
+                alert("¡Híjole bicho! No pude acceder a tu cámara. Revisá si le diste permisos.");
+                stopCamera();
+            }
+        }
+
+        function stopCamera() {
+            cameraModal.style.display = 'none';
+            if (streamInstance) {
+                streamInstance.getTracks().forEach(track => track.stop());
+            }
+            videoPreview.srcObject = null;
+        }
+
+        function capturePhoto() {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoPreview.videoWidth;
+            canvas.height = videoPreview.videoHeight;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');
+
+            stopCamera();
+            appendImageMessageHTML(dataUrl, 'Foto enviada en vivo 📸');
+
+            setTimeout(() => {
+                appendMessageHTML("¡Listo, bicho! Ya cargué tu foto. Decime qué querés que analicemos de ella, ya sea una tarea, algo de tu entorno o lo que sea que me quieras consultar.", 'paco-wrapper', 'paco-message', 'PACO IA', ["Analizar imagen", "Resolver duda", "Guardar registro"]);
+            }, 1200);
+        }
+
+        function handleMediaUpload(input, messageText) {
+            if (input.files && input.files[0]) {
+                appendMessageHTML(`${messageText}: ${input.files[0].name}`, 'user-wrapper', 'user-message', 'Tú');
+                setTimeout(() => {
+                    appendMessageHTML("¡De toque, ya me cayó la imagen! Contame qué querés que hagamos con ella, aquí ando listo.", 'paco-wrapper', 'paco-message', 'PACO IA', ["Explicar contenido", "Dar opinión", "Ayuda con esto"]);
+                }, 1000);
+            }
+        }
+
+        function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const fileSizeInBytes = input.files[0].size;
+                const fileGB = fileSizeInBytes / (1024 * 1024 * 1024);
+                
+                if (fileGB > 5) {
+                    alert("¡Híjole bicho! Ese archivo se pasa de los 5GB.");
+                    input.value = '';
+                    return;
+                }
+
+                appendMessageHTML(`Archivo importado: ${input.files[0].name}`, 'user-wrapper', 'user-message', 'Tú');
+                setTimeout(() => {
+                    appendMessageHTML("¡Buenísimo! Ya recibí el documento. ¿Qué información o análisis necesitas que saquemos de aquí?", 'paco-wrapper', 'paco-message', 'PACO IA', ["Hacer resumen rápido", "Analizar puntos clave"]);
+                }, 1000);
+            }
+        }
+
+        function sendSuggested(text) {
+            userInput.value = text;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            appendMessageHTML(text, 'user-wrapper', 'user-message', 'Tú');
+            userInput.value = '';
+
+            const oldContainers = document.querySelectorAll('.suggestions-container');
+            oldContainers.forEach(container => container.style.display = 'none');
+
+            chatHistory.push({ role: "user", parts: [{ text: text }] });
+
+            const loadingId = 'loading-' + Date.now();
+            const loadingWrapper = document.createElement('div');
+            loadingWrapper.className = 'message-wrapper paco-wrapper';
+            loadingWrapper.id = loadingId;
+            loadingWrapper.innerHTML = `
+                <div class="sender-name">PACO IA</div>
+                <div class="message paco-message">
+                    <div class="typing-dots"><span></span><span></span><span></span></div>
+                </div>
+            `;
+            chatContainer.appendChild(loadingWrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: chatHistory,
+                        systemInstruction: { parts: [{ text: systemInstruction }] }
+                    })
+                });
+
+                const data = await response.json();
+                document.getElementById(loadingId).remove();
+
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    let pacoReply = data.candidates[0].content.parts[0].text;
+                    chatHistory.push({ role: "model", parts: [{ text: pacoReply }] });
+
+                    let suggestions = [];
+                    const lines = pacoReply.trim().split('\n');
+                    const lastLine = lines[lines.length - 1];
+                    
+                    if (lastLine.includes('|')) {
+                        suggestions = lastLine.split('|').map(s => s.trim());
+                        lines.pop();
+                        pacoReply = lines.join('\n');
+                    }
+                    
+                    appendMessageHTML(pacoReply, 'paco-wrapper', 'paco-message', 'PACO IA', suggestions);
+                } else {
+                    throw new Error("Incompleto");
+                }
+            } catch (error) {
+                console.error(error);
+                if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
+                appendMessageHTML('Híjole bicho, se me cruzaron los cables un ratito. ¿Te avientas a intentar de nuevo?', 'paco-wrapper', 'paco-message', 'PACO IA');
+            }
+        }
+
+        function clearChat() {
+            chatContainer.innerHTML = '';
+            chatHistory = [];
+            appendMessageHTML("¡Borrón y cuenta nueva, bicho! Todo limpio por acá. ¿De qué querés que platiquemos o qué resolvemos hoy?", 'paco-wrapper', 'paco-message', 'PACO IA', ["Necesito un consejo 🤔", "Tengo una duda general 💡"]);
+        }
+
+        function appendImageMessageHTML(src, labelText) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper user-wrapper';
+            wrapper.innerHTML = `
+                <div class="sender-name">Tú</div>
+                <div class="message user-message">
+                    ${labelText}
+                    <img src="${src}" class="chat-captured-img" alt="Foto capturada">
+                </div>
+            `;
+            chatContainer.appendChild(wrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // FUNCIÓN COMPLETADA COMPLETAMENTE PARA EL CONTROL DE IMPRESIÓN DE MENSAJES
+        function appendMessageHTML(text, wrapperClass, messageClass, senderName, suggestions = []) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `message-wrapper ${wrapperClass}`;
+            
+            // Reemplazamos saltos de línea por <br> dinámicamente para respetar el orden visual
+            const formattedText = text.replace(/\n/g, '<br>');
+
+            let htmlContent = `
+                <div class="sender-name">${senderName}</div>
+                <div class="message ${messageClass}">${formattedText}</div>
+            `;
+
+            // Si trae opciones sugeridas dinámicas al final, las renderiza en forma de botones interactivos
+            if (suggestions.length > 0) {
+                let suggestionsHtml = '<div class="suggestions-container">';
+                suggestions.forEach(sug => {
+                    suggestionsHtml += `<button class="suggestion-btn" onclick="sendSuggested('${sug.replace(/'/g, "\\'")}')">${sug}</button>`;
+                });
+                suggestionsHtml += '</div>';
+                htmlContent += suggestionsHtml;
+            }
+
+            wrapper.innerHTML = htmlContent;
+            chatContainer.appendChild(wrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>
