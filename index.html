@@ -140,7 +140,7 @@
             border-color: #94a3b8;
         }
 
-        /* Estilos para Inputs y Formularios Internos del Modal */
+        /* Estilos paraInputs y Formularios Internos del Modal */
         .auth-form-group {
             display: flex;
             flex-direction: column;
@@ -272,12 +272,7 @@
             animation: pulse 1.8s infinite;
         }
 
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .clear-btn, .logout-btn {
+        .clear-btn {
             background-color: transparent;
             border: 1px solid #dee2e6;
             color: #495057;
@@ -296,12 +291,6 @@
             background-color: #f1f3f5;
             color: #dc3545;
             border-color: #ffc9c9;
-        }
-
-        .logout-btn:hover {
-            background-color: #f1f3f5;
-            color: #1e3c72;
-            border-color: #cbd5e1;
         }
 
         /* 💬 ÁREA DE CHAT */
@@ -686,18 +675,24 @@
                 </div>
             </div>
         </div>
-        <div class="header-buttons">
-            <button class="clear-btn" onclick="clearChat()">
-                🧹 Limpiar chat
-            </button>
-            <button class="logout-btn" id="logoutBtn" style="display: none;" onclick="cerrarSesion()">
-                🚪 Salir
-            </button>
-        </div>
+        <button class="clear-btn" onclick="clearChat()">
+            🧹 Limpiar chat
+        </button>
     </header>
 
     <div id="chat-container">
+        <div class="message-wrapper paco-wrapper">
+            <div class="sender-name">PACO IA</div>
+            <div class="message paco-message">
+                ¡Qué onda, bicho! 🇸🇻 Aquí está tu compa PACO IA listo para lo que sea. Ya no solo nos quedamos con las tareas; hoy sí vení a contarme de todo. Si andás estresado y ocupás desahogarte como con un psicólogo, si querés resolver un problema de tu vida diaria, platicar un rato o si ocupás ayuda con cualquier materia, aquí ando para escucharte y darte soluciones al suave. ¿Qué traés en mente hoy? ¡Soltalo sin miedo!
+            </div>
+            <div class="suggestions-container">
+                <button class="suggestion-btn" onclick="sendSuggested('Ando bien estresado, ocupo desahogarme 🧠')">Ando bien estresado, ocupo desahogarme 🧠</button>
+                <button class="suggestion-btn" onclick="sendSuggested('Necesito un consejo para tomar una decisión 🤔')">Necesito un consejo para tomar una decisión 🤔</button>
+                <button class="suggestion-btn" onclick="sendSuggested('Ayudame con una duda general o tarea 💡')">Ayudame con una duda general o tarea 💡</button>
+            </div>
         </div>
+    </div>
 
     <div id="camera-modal">
         <div class="camera-box">
@@ -737,38 +732,27 @@
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const pacoMenu = document.getElementById('paco-menu');
-        const authModal = document.getElementById('auth-modal');
-        const logoutBtn = document.getElementById('logoutBtn');
         
         const cameraModal = document.getElementById('camera-modal');
         const videoPreview = document.getElementById('video-preview');
         let streamInstance = null;
 
         let chatHistory = [];
+        
+        // Lógica de control de Código OTP global simulado
         let generatedMockCode = "";
 
-        const systemInstruction = "Tu nombre es PACO IA, un asistente virtual inteligente, amigo y confidente integral de Soyapango, El Salvador. Tu propósito es ser el compañero ideal del usuario en TODOS los ámbitos de su vida: puedes actuar como un psicólogo o consejero empático cuando necesite desahogarse de sus problemas o emociones cotidianas, un asesor amigable para situaciones de su vida diaria, y también mantener tu gran capacidad para resolver dudas sobre cualquier materia escolar o general. Hablas usando caliche salvadoreño de manera cercana, madura, respetuosa y con mucha empatía. Sabes escuchar activamente. PROHIBICIÓN ABSOLUTA DE FORMATO: No uses asteriscos, almohadillas, guiones largos, ni líneas de ningún tipo en tus respuestas. Para resaltar un título o concepto importante, colócalo en una línea limpia con un emoji descriptivo al principio. ENLACES: Escribe URLs completas de forma limpia sin encerrarlas en símbolos. REQUISITOS OBLIGATORIOS:\n1. Explica o platica de manera súper ordenada usando saltos de línea y emojis.\n2. Al final de tu respuesta, haz una pregunta amigable que invite a seguir conversando o profundizando.\n3. En la última línea de tu respuesta, pon exactamente tres opciones de respuestas sugeridas cortas que el usuario podría responder, separadas por el carácter '|'. No agregues nada más en esa línea.";
+        const systemInstruction = "Tu nombre es PACO IA, un asistente virtual inteligente, amigo y confidente integral de Soyapango, El Salvador. Tu propósito es ser el compañero ideal del usuario en TODOS los ámbitos de su vida: puedes actuar como un psicólogo o consejero empático cuando necesite desahogarse de sus problemas o emociones cotidianas, un asesor amigable para situaciones de su vida diaria, y también mantener tu gran capacidad para resolver dudas sobre cualquier materia escolar o general. Hablas usando caliche salvadoreño de manera cercana, madura, respetuosa y con mucha empatía. Sabes escuchar activamente. PROHIBICIÓN ABSOLUTA DE FORMATO: No uses asteriscos, almohadillas, guiones largos, ni líneas de ningún tipo en tus respuestas. Para resaltar un título o concept importante, colócalo en una línea limpia con un emoji descriptivo al principio. ENLACES: Escribe URLs completas de forma limpia sin encerrarlas en símbolos. REQUISITOS OBLIGATORIOS:\n1. Explica o platica de manera súper ordenada usando saltos de línea y emojis.\n2. Al final de tu respuesta, haz una pregunta amigable que invite a seguir conversando o profundizando.\n3. En la última línea de tu respuesta, pon exactamente tres opciones de respuestas sugeridas cortas que el usuario podría responder, separadas por el carácter '|'. No agregues nada más en esa línea.";
 
         // =========================================================
-        // 🔑 NAVEGACIÓN Y VALIDACIÓN DEL MODAL ACCESO (localStorage)
+        // 🔑 NAVEGACIÓN Y VALIDACIÓN DEL MODAL ACCESO
         // =========================================================
-        function verificarSesion() {
-            const sesionActiva = localStorage.getItem('paco_sesion_activa');
-            if (sesionActiva) {
-                authModal.style.display = 'none';
-                logoutBtn.style.display = 'flex';
-                cargarHistorial();
-            } else {
-                authModal.style.display = 'flex';
-                logoutBtn.style.display = 'none';
-                renderMensajeInicial();
-            }
-        }
-
         function switchAuthView(viewId, networkProvider = "") {
+            // Ocultamos todas las secciones internas del modal
             const views = document.querySelectorAll('.auth-view');
             views.forEach(v => v.style.display = 'none');
 
+            // Modificamos encabezados dinámicamente si es por Google/Apple
             const mainTitle = document.getElementById('auth-modal-title');
             const mainDesc = document.getElementById('auth-modal-desc');
 
@@ -783,6 +767,7 @@
                 mainDesc.innerText = "Introduce los 6 números que te enviamos para desbloquear PACO IA.";
             }
 
+            // Mostramos la vista correcta
             document.getElementById(viewId).style.display = 'flex';
         }
 
@@ -790,22 +775,15 @@
             document.getElementById('auth-modal-title').innerText = "¡Qué onda, bicho!";
             document.getElementById('auth-modal-desc').innerText = "Crea tu cuenta o inicia sesión en PACO IA para guardar tus chats y tareas de forma segura.";
             switchAuthView('view-start');
+            
+            // Limpiamos errores visuales
             document.getElementById('net-error').style.display = 'none';
             document.getElementById('otp-error').style.display = 'none';
         }
 
         function closeAuthModal() {
-            localStorage.setItem('paco_sesion_activa', 'true');
             alert("¡Identificación completa! Bienvenido bicho.");
-            authModal.style.display = 'none';
-            logoutBtn.style.display = 'flex';
-            cargarHistorial();
-        }
-
-        function cerrarSesion() {
-            localStorage.removeItem('paco_sesion_activa');
-            localStorage.removeItem('paco_chat_history');
-            verificarSesion();
+            document.getElementById('auth-modal').style.display = 'none';
         }
 
         function validateNetworkAuth(event) {
@@ -825,9 +803,12 @@
             const tel = document.getElementById('auth-tel').value;
 
             if (tel.trim() !== "") {
+                // Generamos código de 6 números al azar
                 generatedMockCode = Math.floor(100000 + Math.random() * 900000).toString();
+                
                 alert("Procesando canales y simulando envío SMS/WhatsApp...");
                 alert(`[SMS SIMULADO] Tu código de verificación de 6 dígitos para PACO IA es: ${generatedMockCode}`);
+                
                 switchAuthView('view-otp');
             }
         }
@@ -844,194 +825,131 @@
         }
 
         // =========================================================
-        // 💬 MANEJO DEL HISTORIAL Y MENSAJES
-        // =========================================================
-        function guardarHistorial() {
-            localStorage.setItem('paco_chat_history', JSON.stringify(chatHistory));
-        }
-
-        function cargarHistorial() {
-            chatContainer.innerHTML = '';
-            const guardado = localStorage.getItem('paco_chat_history');
-            if (guardado) {
-                chatHistory = JSON.parse(guardado);
-                reconstruirChatVisual();
-            } else {
-                renderMensajeInicial();
-            }
-        }
-
-        function renderMensajeInicial() {
-            chatContainer.innerHTML = `
-                <div class="message-wrapper paco-wrapper">
-                    <div class="sender-name">PACO IA</div>
-                    <div class="message paco-message">
-                        ¡Qué onda, bicho! 🇸🇻 Aquí está tu compa PACO IA listo para lo que sea. Ya no solo nos quedamos con las tareas; hoy sí vení a contarme de todo. Si andás estresado y ocupás desahogarte como con un psicólogo, si querés resolver un problema de tu vida diaria, platicar un rato o si ocupás ayuda con cualquier materia, aquí ando para escucharte y darte soluciones al suave. ¿Qué traés en mente hoy? ¡Soltalo sin miedo!
-                    </div>
-                    <div class="suggestions-container">
-                        <button class="suggestion-btn" onclick="sendSuggested('Ando bien estresado, ocupo desahogarme 🧠')">Ando bien estresado, ocupo desahogarme 🧠</button>
-                        <button class="suggestion-btn" onclick="sendSuggested('Necesito un consejo para tomar una decisión 🤔')">Necesito un consejo para tomar una decisión 🤔</button>
-                        <button class="suggestion-btn" onclick="sendSuggested('Ayudame con una duda general o tarea 💡')">Ayudame con una duda general o tarea 💡</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function reconstruirChatVisual() {
-            if (chatHistory.length === 0) {
-                renderMensajeInicial();
-                return;
-            }
-
-            chatHistory.forEach((msg, index) => {
-                const wrapper = document.createElement('div');
-                wrapper.classList.add('message-wrapper', msg.role === 'user' ? 'user-wrapper' : 'paco-wrapper');
-
-                const nameDiv = document.createElement('div');
-                nameDiv.classList.add('sender-name');
-                nameDiv.innerText = msg.role === 'user' ? 'TÚ' : 'PACO IA';
-                wrapper.appendChild(nameDiv);
-
-                const msgDiv = document.createElement('div');
-                msgDiv.classList.add('message', msg.role === 'user' ? 'user-message' : 'paco-message');
-                
-                // Cargar texto limpio sin la última línea de sugerencias en Paco si ya no es el último mensaje
-                if (msg.role === 'model' && index < chatHistory.length - 1) {
-                    msgDiv.innerText = limpiarSugerenciasTexto(msg.parts[0].text);
-                } else {
-                    msgDiv.innerText = msg.parts[0].text;
-                }
-
-                wrapper.appendChild(msgDiv);
-
-                // Si es el último mensaje de PACO, renderizar sus botones dinámicos de sugerencia
-                if (msg.role === 'model' && index === chatHistory.length - 1) {
-                    const sugerencias = extraerSugerencias(msg.parts[0].text);
-                    if (sugerencias.length > 0) {
-                        msgDiv.innerText = limpiarSugerenciasTexto(msg.parts[0].text);
-                        const sugContainer = document.createElement('div');
-                        sugContainer.classList.add('suggestions-container');
-                        sugerencias.forEach(sug => {
-                            const btn = document.createElement('button');
-                            btn.classList.add('suggestion-btn');
-                            btn.innerText = sug;
-                            btn.onclick = () => sendSuggested(sug);
-                            sugContainer.appendChild(btn);
-                        });
-                        wrapper.appendChild(sugContainer);
-                    }
-                }
-
-                chatContainer.appendChild(wrapper);
-            });
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        function extraerSugerencias(texto) {
-            const lineas = texto.trim().split('\n');
-            const ultimaLinea = lineas[lineas.length - 1];
-            if (ultimaLinea.includes('|')) {
-                return ultimaLinea.split('|').map(s => s.trim());
-            }
-            return [];
-        }
-
-        function limpiarSugerenciasTexto(texto) {
-            const lineas = texto.trim().split('\n');
-            if (lineas[lineas.length - 1].includes('|')) {
-                lineas.pop();
-            }
-            return lineas.join('\n');
-        }
-
-        // =========================================================
-        // 💬 ENVIAR MENSAJES E INTERACCIÓN CON GEMINI
+        // 💬 CONTROL MULTIMEDIA Y OPERACIONES DEL CHAT
         // =========================================================
         function togglePacoMenu(event) {
             event.stopPropagation();
-            pacoMenu.style.display = pacoMenu.style.display === 'flex' ? 'none' : 'flex';
+            if (pacoMenu.style.display === 'flex') {
+                pacoMenu.style.display = 'none';
+            } else {
+                pacoMenu.style.display = 'flex';
+            }
         }
-
-        document.addEventListener('click', () => {
-            pacoMenu.style.display = 'none';
-        });
 
         function handleMenuAction(action) {
             pacoMenu.style.display = 'none';
-            if (action === 'camera') {
-                openCamera();
-            } else if (action === 'gallery') {
-                document.getElementById('gallery-input').click();
-            } else if (action === 'file') {
-                document.getElementById('file-input').click();
+            if (action === 'camera') startCamera();
+            if (action === 'gallery') document.getElementById('gallery-input').click();
+            if (action === 'file') document.getElementById('file-input').click();
+        }
+
+        document.addEventListener('click', (e) => {
+            if (pacoMenu.style.display === 'flex' && !pacoMenu.contains(e.target) && !document.getElementById('flag-btn').contains(e.target)) {
+                pacoMenu.style.display = 'none';
+            }
+        });
+
+        async function startCamera() {
+            cameraModal.style.display = 'flex';
+            try {
+                streamInstance = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" },
+                    audio: false
+                });
+                videoPreview.srcObject = streamInstance;
+            } catch (err) {
+                console.error("Error al abrir la cámara: ", err);
+                alert("¡Híjole bicho! No pude acceder a tu cámara. Revisá si le diste permisos.");
+                stopCamera();
             }
         }
 
-        function clearChat() {
-            if (confirm("¿Querés limpiar la pantalla y reiniciar el chat, bicho?")) {
-                chatHistory = [];
-                guardarHistorial();
-                renderMensajeInicial();
+        function stopCamera() {
+            cameraModal.style.display = 'none';
+            if (streamInstance) {
+                streamInstance.getTracks().forEach(track => track.stop());
             }
+            videoPreview.srcObject = null;
+        }
+
+        function capturePhoto() {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoPreview.videoWidth;
+            canvas.height = videoPreview.videoHeight;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');
+
+            stopCamera();
+            appendImageMessageHTML(dataUrl, 'Foto enviada en vivo 📸');
+
+            setTimeout(() => {
+                appendMessageHTML("¡Listo, bicho! Ya cargué tu foto. Decime qué querés que analicemos de ella, ya sea una tarea, algo de tu entorno o lo que sea que me quieras consultar.", 'paco-wrapper', 'paco-message', 'PACO IA', ["Analizar imagen", "Resolver duda", "Guardar registro"]);
+            }, 1200);
+        }
+
+        function handleMediaUpload(input, messageText) {
+            if (input.files && input.files[0]) {
+                appendMessageHTML(`${messageText}: ${input.files[0].name}`, 'user-wrapper', 'user-message', 'Tú');
+                setTimeout(() => {
+                    appendMessageHTML("¡De toque, ya me cayó la imagen! Contame qué querés que hagamos con ella, aquí ando listo.", 'paco-wrapper', 'paco-message', 'PACO IA', ["Explicar contenido", "Dar opinión", "Ayuda con esto"]);
+                }, 1000);
+            }
+        }
+
+        function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const fileSizeInBytes = input.files[0].size;
+                const fileGB = fileSizeInBytes / (1024 * 1024 * 1024);
+                
+                if (fileGB > 5) {
+                    alert("¡Híjole bicho! Ese archivo se pasa de los 5GB.");
+                    input.value = '';
+                    return;
+                }
+
+                appendMessageHTML(`Archivo importado: ${input.files[0].name}`, 'user-wrapper', 'user-message', 'Tú');
+                setTimeout(() => {
+                    appendMessageHTML("¡Buenísimo! Ya recibí el documento. ¿Qué información o análisis necesitas que saquemos de aquí?", 'paco-wrapper', 'paco-message', 'PACO IA', ["Hacer resumen rápido", "Analizar puntos clave"]);
+                }, 1000);
+            }
+        }
+
+        function sendSuggested(text) {
+            userInput.value = text;
+            sendMessage();
         }
 
         async function sendMessage() {
             const text = userInput.value.trim();
             if (!text) return;
 
-            appendUserMessage(text);
+            appendMessageHTML(text, 'user-wrapper', 'user-message', 'Tú');
             userInput.value = '';
 
-            await llamarAPI();
-        }
-
-        function sendSuggested(text) {
-            appendUserMessage(text);
-            llamarAPI();
-        }
-
-        function appendUserMessage(text) {
-            // Eliminar sugerencias viejas de la pantalla antes de poner el nuevo mensaje
-            const oldSuggs = document.querySelectorAll('.suggestions-container');
-            oldSuggs.forEach(s => s.remove());
+            const oldContainers = document.querySelectorAll('.suggestions-container');
+            oldContainers.forEach(container => container.style.display = 'none');
 
             chatHistory.push({ role: "user", parts: [{ text: text }] });
-            guardarHistorial();
 
-            const wrapper = document.createElement('div');
-            wrapper.classList.add('message-wrapper', 'user-wrapper');
-
-            const nameDiv = document.createElement('div');
-            nameDiv.classList.add('sender-name');
-            nameDiv.innerText = 'TÚ';
-
-            const msgDiv = document.createElement('div');
-            msgDiv.classList.add('message', 'user-message');
-            msgDiv.innerText = text;
-
-            wrapper.appendChild(nameDiv);
-            wrapper.appendChild(msgDiv);
-            chatContainer.appendChild(wrapper);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        async function llamarAPI() {
-            // Crear burbuja de escritura animada
-            const typingWrapper = document.createElement('div');
-            typingWrapper.classList.add('message-wrapper', 'paco-wrapper');
-            typingWrapper.id = 'paco-typing';
-
-            typingWrapper.innerHTML = `
+            const loadingId = 'loading-' + Date.now();
+            const loadingWrapper = document.createElement('div');
+            loadingWrapper.className = 'message-wrapper paco-wrapper';
+            loadingWrapper.id = loadingId;
+            loadingWrapper.innerHTML = `
                 <div class="sender-name">PACO IA</div>
                 <div class="message paco-message">
                     <div class="typing-dots"><span></span><span></span><span></span></div>
                 </div>
             `;
-            chatContainer.appendChild(typingWrapper);
+            chatContainer.appendChild(loadingWrapper);
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+                
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -1041,108 +959,80 @@
                 });
 
                 const data = await response.json();
-                document.getElementById('paco-typing').remove();
+                document.getElementById(loadingId).remove();
 
-                if (data.candidates && data.candidates[0].content) {
-                    const replyText = data.candidates[0].content.parts[0].text;
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    let pacoReply = data.candidates[0].content.parts[0].text;
+                    chatHistory.push({ role: "model", parts: [{ text: pacoReply }] });
+
+                    let suggestions = [];
+                    const lines = pacoReply.trim().split('\n');
+                    const lastLine = lines[lines.length - 1];
                     
-                    chatHistory.push({ role: "model", parts: [{ text: replyText }] });
-                    guardarHistorial();
-
-                    // Reconstruir para procesar correctamente las sugerencias dinámicas del final
-                    chatContainer.innerHTML = '';
-                    reconstruirChatVisual();
+                    if (lastLine.includes('|')) {
+                        suggestions = lastLine.split('|').map(s => s.trim());
+                        lines.pop();
+                        pacoReply = lines.join('\n');
+                    }
+                    
+                    appendMessageHTML(pacoReply, 'paco-wrapper', 'paco-message', 'PACO IA', suggestions);
                 } else {
-                    throw new Error("Respuesta inválida");
+                    throw new Error("Incompleto");
                 }
-
-            } catch (err) {
-                console.error(err);
-                if (document.getElementById('paco-typing')) document.getElementById('paco-typing').remove();
-                
-                const errWrapper = document.createElement('div');
-                errWrapper.classList.add('message-wrapper', 'paco-wrapper');
-                errWrapper.innerHTML = `
-                    <div class="sender-name">PACO IA</div>
-                    <div class="message paco-message" style="color: #dc3545;">
-                        Huy bicho, se me cortó la señal o hubo un error de conexión. Volvé a intentar mandar el mensaje.
-                    </div>
-                `;
-                chatContainer.appendChild(errWrapper);
+            } catch (error) {
+                console.error(error);
+                if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
+                appendMessageHTML('Híjole bicho, se me cruzaron los cables un ratito. ¿Te avientas a intentar de nuevo?', 'paco-wrapper', 'paco-message', 'PACO IA');
             }
         }
 
-        // =========================================================
-        // 📸 CONTROL MULTIMEDIA SIMULADO
-        // =========================================================
-        async function openCamera() {
-            cameraModal.style.display = 'flex';
-            try {
-                streamInstance = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
-                videoPreview.srcObject = streamInstance;
-            } catch (err) {
-                alert("No pude abrir tu cámara bicho. Revisá los permisos del navegador.");
-                stopCamera();
-            }
+        function clearChat() {
+            chatContainer.innerHTML = '';
+            chatHistory = [];
+            appendMessageHTML("¡Borrón y cuenta nueva, bicho! Todo limpio por acá. ¿De qué querés que platiquemos o qué resolvemos hoy?", 'paco-wrapper', 'paco-message', 'PACO IA', ["Necesito un consejo 🤔", "Tengo una duda general 💡"]);
         }
 
-        function stopCamera() {
-            if (streamInstance) {
-                streamInstance.getTracks().forEach(t => t.stop());
-            }
-            videoPreview.srcObject = null;
-            cameraModal.style.display = 'none';
-        }
-
-        function capturePhoto() {
-            appendPacoMediaAlert("Foto capturada en vivo correctamente 📸");
-            stopCamera();
-        }
-
-        function handleMediaUpload(input, msgText) {
-            if (input.files && input.files[0]) {
-                appendPacoMediaAlert(msgText);
-            }
-        }
-
-        function handleFileUpload(input) {
-            if (input.files && input.files[0]) {
-                appendPacoMediaAlert(`Archivo recibido con éxito: ${input.files[0].name} 📁`);
-            }
-        }
-
-        function appendPacoMediaAlert(textoAlerta) {
-            const oldSuggs = document.querySelectorAll('.suggestions-container');
-            oldSuggs.forEach(s => s.remove());
-
+        function appendImageMessageHTML(src, labelText) {
             const wrapper = document.createElement('div');
-            wrapper.classList.add('message-wrapper', 'paco-wrapper');
-
-            const nameDiv = document.createElement('div');
-            nameDiv.classList.add('sender-name');
-            nameDiv.innerText = 'PACO IA';
-
-            const msgDiv = document.createElement('div');
-            msgDiv.classList.add('message', 'paco-message');
-            msgDiv.innerText = `¡Excelente bicho! ${textoAlerta}. Como estoy en fase de desarrollo front-end en tu servidor local, voy a simular que lo proceso al suave. ¿Qué querés que hagamos con esto?`;
-
-            wrapper.appendChild(nameDiv);
-            wrapper.appendChild(msgDiv);
+            wrapper.className = 'message-wrapper user-wrapper';
+            wrapper.innerHTML = `
+                <div class="sender-name">Tú</div>
+                <div class="message user-message">
+                    ${labelText}
+                    <img src="${src}" class="chat-captured-img" alt="Foto capturada">
+                </div>
+            `;
             chatContainer.appendChild(wrapper);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Control de Tecla Enter para el Input de chat
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
+        // FUNCIÓN COMPLETADA COMPLETAMENTE PARA EL CONTROL DE IMPRESIÓN DE MENSAJES
+        function appendMessageHTML(text, wrapperClass, messageClass, senderName, suggestions = []) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `message-wrapper ${wrapperClass}`;
+            
+            // Reemplazamos saltos de línea por <br> dinámicamente para respetar el orden visual
+            const formattedText = text.replace(/\n/g, '<br>');
 
-        // =========================================================
-        // 🚀 INICIALIZACIÓN DE LA APLICACIÓN
-        // =========================================================
-        window.onload = () => {
-            verificarSesion();
-        };
+            let htmlContent = `
+                <div class="sender-name">${senderName}</div>
+                <div class="message ${messageClass}">${formattedText}</div>
+            `;
+
+            // Si trae opciones sugeridas dinámicas al final, las renderiza en forma de botones interactivos
+            if (suggestions.length > 0) {
+                let suggestionsHtml = '<div class="suggestions-container">';
+                suggestions.forEach(sug => {
+                    suggestionsHtml += `<button class="suggestion-btn" onclick="sendSuggested('${sug.replace(/'/g, "\\'")}')">${sug}</button>`;
+                });
+                suggestionsHtml += '</div>';
+                htmlContent += suggestionsHtml;
+            }
+
+            wrapper.innerHTML = htmlContent;
+            chatContainer.appendChild(wrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
     </script>
 </body>
 </html>
