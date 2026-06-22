@@ -716,8 +716,8 @@
     </div>
 
     <script>
-        // ⚠️ CAMBIA ESTE TEXTO POR TU API KEY REAL DE GOOGLE AI STUDIO (EMPIEZA CON AIzaSy)
-        const API_KEY = "AIzasyAQ.Ab8RN6JzF5M8qmxsSy-ERDBePQZI48bXRzzg3brRR5sfFF8Zlw"; 
+        // 🔑 TU API KEY REAL PROVENIENTE DE GOOGLE CLOUD
+        const API_KEY = "AQ.Ab8RN6Km5tZhfnLxmYFeHSSb58c4bmE2dTfuwR8Ss9B-8Z-M7Q"; 
 
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
@@ -803,7 +803,7 @@
         }
 
         // =========================================================
-        // 💬 MULTIMEDIA Y MANEJO DEL CHAT REAL
+        // 💬 MULTIMEDIA Y MANEJO DEL CHAT
         // =========================================================
         function togglePacoMenu(event) {
             event.stopPropagation();
@@ -894,7 +894,7 @@
         }
 
         // =========================================================
-        // 📡 CONEXIÓN DIRECTA A LA INTELIGENCIA ARTIFICIAL DE GEMINI
+        // 📡 CONEXIÓN CON HEADERS OPTIMIZADA PARA LLAVES TIPO AQ.
         // =========================================================
         async function sendMessage() {
             const text = userInput.value.trim();
@@ -926,12 +926,15 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
-                // Endpoint directo del modelo estable e inteligente de Google
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+                // Se envía la petición limpia a la URL y pasamos la llave por los Headers ('x-goog-api-key')
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`;
                 
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-goog-api-key': API_KEY 
+                    },
                     body: JSON.stringify({
                         contents: chatHistory,
                         systemInstruction: { parts: [{ text: systemInstruction }] }
@@ -959,8 +962,8 @@
             } catch (error) {
                 if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
                 
-                // Mensaje en caso de que la API KEY siga vacía o incorrecta
-                appendMessageHTML("¡Híjole bicho! Se me cruzaron los cables porque no tenés una **API Key real configurada** en la línea 326 de tu código. Poné una llave válida de Google AI Studio para que pueda responderte de forma general y libre como yo.", 'paco-wrapper', 'paco-message', 'PACO IA');
+                appendMessageHTML("¡Híjole bicho! Sigue habiendo un problema de autenticación con la API Key. Verifica que esté guardada correctamente.", 'paco-wrapper', 'paco-message', 'PACO IA');
+                console.error(error);
             }
         }
 
@@ -997,6 +1000,13 @@
             chatContainer.appendChild(wrapper);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
+
+        // Detectar Enter automático para enviar el mensaje
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
     </script>
 </body>
 </html>
