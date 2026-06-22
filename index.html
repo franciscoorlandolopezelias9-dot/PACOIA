@@ -47,24 +47,20 @@
             text-align: center;
             box-shadow: 0 24px 60px rgba(0,0,0,0.12);
             border: 1px solid #e9ecef;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: scaleUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .auth-header img {
-            width: 65px;
-            height: 65px;
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #2a5298;
-            margin: 0 auto 12px auto;
-            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.15);
+            margin-bottom: 12px;
+            box-shadow: 0 8px 20px rgba(42, 82, 152, 0.15);
         }
 
         .auth-header h2 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: #1e3c72;
             font-weight: 700;
             margin-bottom: 6px;
@@ -74,77 +70,70 @@
             font-size: 0.9rem;
             color: #6c757d;
             line-height: 1.4;
+            margin-bottom: 25px;
         }
 
-        /* Contenedor dinámico de vistas */
         .auth-view {
-            display: none; /* Ocultas por defecto */
+            display: none;
             flex-direction: column;
-            gap: 16px;
-            text-align: left;
-            animation: fadeIn 0.2s ease;
+            width: 100%;
+            gap: 12px;
         }
 
-        /* Forzamos que la vista inicial empiece visible */
-        #view-start {
-            display: flex;
-        }
+        #view-start { display: flex; }
 
         .auth-buttons {
             display: flex;
             flex-direction: column;
             gap: 12px;
+            width: 100%;
         }
 
-        /* Estilo general para los botones de autenticación */
         .auth-btn {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 14px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
             border: 1px solid #dee2e6;
             background-color: #ffffff;
-            color: #212529;
+            color: #495057;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .auth-btn:hover {
             background-color: #f8f9fa;
+            border-color: #ced4da;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
 
-        .auth-icon {
-            width: 20px;
-            height: 20px;
+        .auth-btn .auth-icon {
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Botón de celular destacado levemente */
         .btn-phone {
-            background-color: #f1f5f9;
-            border-color: #cbd5e1;
-            color: #1e293b;
-        }
-        
-        .btn-phone:hover {
-            background-color: #e2e8f0;
-            border-color: #94a3b8;
+            background-color: #f1f3f5;
+            border: none;
+            color: #212529;
         }
 
-        /* Estilos para Inputs y Formularios Internos del Modal */
+        .btn-phone:hover {
+            background-color: #e9ecef;
+        }
+
         .auth-form-group {
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
             gap: 6px;
+            width: 100%;
         }
 
         .auth-form-group label {
@@ -155,9 +144,9 @@
 
         .auth-input {
             width: 100%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            border: 1px solid #cbd5e1;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid #ced4da;
             font-size: 0.95rem;
             outline: none;
             transition: border-color 0.2s;
@@ -169,54 +158,53 @@
 
         .btn-submit-auth {
             width: 100%;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 14px;
+            border-radius: 14px;
             border: none;
             background: linear-gradient(135deg, #2a5298, #1e3c72);
-            color: white;
-            font-weight: 600;
+            color: #ffffff;
             font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.25);
+            transition: all 0.2s;
         }
 
         .btn-submit-auth:hover {
             transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(42, 82, 152, 0.35);
         }
 
         .btn-back-auth {
             background: none;
             border: none;
-            color: #2a5298;
+            color: #6c757d;
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
+            margin-top: 10px;
             text-decoration: underline;
-            margin-top: 5px;
-            text-align: center;
         }
 
         .auth-error-msg {
-            color: #e03131;
-            font-size: 0.85rem;
-            text-align: center;
+            color: #fa5252;
+            font-size: 0.8rem;
+            font-weight: 600;
             display: none;
-            font-weight: 500;
+            text-align: left;
+            width: 100%;
         }
 
-        /* 🌟 BARRA SUPERIOR MODERNA CON INTEGRACIÓN DE LOGO */
+        /* 💻 HEADER */
         header {
-            padding: 12px 25px;
+            background-color: #ffffff;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
             border-bottom: 1px solid #e9ecef;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            z-index: 10;
         }
 
         .header-title-container {
@@ -226,278 +214,232 @@
         }
 
         .header-logo {
-            width: 45px;
-            height: 45px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #2a5298;
-            box-shadow: 0 2px 8px rgba(42, 82, 152, 0.15);
+            box-shadow: 0 4px 10px rgba(42, 82, 152, 0.15);
         }
 
-        .header-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        header h1 {
-            font-size: 1.25rem;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .header-meta h1 {
+            font-size: 1.15rem;
             font-weight: 700;
-            letter-spacing: -0.3px;
+            color: #1e3c72;
             line-height: 1.2;
         }
 
         .status-badge {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 5px;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            color: #2b8a3e;
-            background-color: #ebfbee;
-            padding: 2px 8px;
-            border-radius: 20px;
-            border: 1px solid #d3f9d8;
-            width: fit-content;
+            color: #40c057;
+            margin-top: 1px;
         }
 
         .status-dot {
-            width: 6px;
-            height: 6px;
+            width: 7px;
+            height: 7px;
             background-color: #40c057;
             border-radius: 50%;
-            animation: pulse 1.8s infinite;
+            animation: pulse 2s infinite;
         }
 
         .clear-btn {
-            background-color: transparent;
-            border: 1px solid #dee2e6;
-            color: #495057;
-            padding: 6px 14px;
-            border-radius: 12px;
+            background-color: #fff5f5;
+            color: #fa5252;
+            border: 1px solid #ffe3e3;
+            padding: 8px 14px;
+            border-radius: 14px;
             font-size: 0.85rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            transition: all 0.2s;
         }
 
         .clear-btn:hover {
-            background-color: #f1f3f5;
-            color: #dc3545;
-            border-color: #ffc9c9;
+            background-color: #ffe3e3;
+            transform: translateY(-1px);
         }
 
-        /* 💬 ÁREA DE CHAT */
+        /* 💬 CHAT AREA */
         #chat-container {
             flex: 1;
+            padding: 20px;
             overflow-y: auto;
-            padding: 30px 20px;
             display: flex;
             flex-direction: column;
             gap: 24px;
-            max-width: 850px;
-            width: 100%;
-            margin: 0 auto;
-            scroll-behavior: smooth;
-        }
-
-        #chat-container::-webkit-scrollbar {
-            width: 6px;
-        }
-        #chat-container::-webkit-scrollbar-thumb {
-            background-color: #dee2e6;
-            border-radius: 10px;
+            background-color: #f8f9fa;
         }
 
         .message-wrapper {
             display: flex;
             flex-direction: column;
-            width: 100%;
-            animation: fadeIn 0.3s ease;
+            max-width: 82%;
+            animation: slideUp 0.3s ease forwards;
         }
+
+        .paco-wrapper { align-self: flex-start; align-items: flex-start; }
+        .user-wrapper { align-self: flex-end; align-items: flex-end; }
+
+        .sender-name {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #adb5bd;
+            margin-bottom: 5px;
+            margin-left: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .user-wrapper .sender-name { margin-right: 4px; margin-left: 0; }
 
         .message {
-            max-width: 80%;
-            padding: 14px 20px;
+            padding: 14px 18px;
             border-radius: 20px;
-            line-height: 1.6;
             font-size: 0.98rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            word-break: break-word;
-        }
-
-        .user-wrapper {
-            align-items: flex-end;
-        }
-
-        .user-message {
-            background: linear-gradient(135deg, #2b5298, #1e3c72);
-            color: #ffffff;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.15);
-        }
-
-        .paco-wrapper {
-            align-items: flex-start;
+            line-height: 1.5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.015);
         }
 
         .paco-message {
             background-color: #ffffff;
-            color: #343a40;
+            color: #212529;
             border-bottom-left-radius: 4px;
             border: 1px solid #e9ecef;
         }
 
-        .sender-name {
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
+        .user-message {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: #ffffff;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 6px 16px rgba(42, 82, 152, 0.15);
         }
-
-        .user-wrapper .sender-name { color: #495057; margin-right: 4px; }
-        .paco-wrapper .sender-name { color: #2a5298; margin-left: 4px; }
 
         .chat-captured-img {
             max-width: 100%;
-            border-radius: 14px;
+            max-height: 220px;
+            border-radius: 12px;
             margin-top: 10px;
-            border: 1px solid #e9ecef;
             display: block;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
+        /* 💡 SUGGESTIONS */
         .suggestions-container {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin-top: 12px;
-            max-width: 85%;
+            width: 100%;
         }
 
         .suggestion-btn {
             background-color: #ffffff;
             color: #2a5298;
             border: 1px solid #e2e8f0;
-            padding: 9px 16px;
-            border-radius: 16px;
+            padding: 10px 16px;
+            border-radius: 18px;
             font-size: 0.88rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            text-align: left;
         }
 
         .suggestion-btn:hover {
             background-color: #f1f5f9;
-            border-color: #2a5298;
+            border-color: #cbd5e1;
             transform: translateY(-1px);
         }
 
-        /* 🛠️ BARRA DE ENTRADA CONTENEDORA DE MENÚ FLOTANTE */
+        /* 📥 INPUT SYSTEM */
         #input-container {
-            padding: 20px;
-            max-width: 850px;
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
+            background-color: #ffffff;
+            padding: 16px 20px;
+            border-top: 1px solid #e9ecef;
             position: relative;
         }
 
-        /* 🇸🇻 MENÚ DESPLEGABLE INTERACTIVO Y LIMPIO */
-        .paco-dropdown-menu {
-            display: none;
-            position: absolute;
-            bottom: 85px;
-            left: 30px;
-            background-color: #ffffff;
-            border-radius: 18px;
-            border: 1px solid #e9ecef;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            padding: 8px;
-            flex-direction: column;
-            gap: 4px;
-            z-index: 500;
-            animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            width: 220px;
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: transparent;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
-            font-size: 0.92rem;
-            font-weight: 500;
-            color: #495057;
-            transition: all 0.15s ease;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f1f5f9;
-            color: #2a5298;
-        }
-
         .input-box {
-            display: flex;
-            background-color: #ffffff;
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #f1f3f5;
             border-radius: 30px;
-            padding: 8px 10px 8px 16px;
+            padding: 6px 10px 6px 8px;
+            display: flex;
             align-items: center;
-            border: 1px solid #dee2e6;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
-            gap: 12px;
-        }
-
-        .input-box:focus-within {
-            border-color: #2a5298;
-            box-shadow: 0 10px 35px rgba(42, 82, 152, 0.08);
+            gap: 10px;
+            border: 1px solid #e9ecef;
         }
 
         .flag-toggle-btn {
-            background: transparent;
+            background: none;
             border: none;
             cursor: pointer;
-            padding: 2px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s ease;
-            user-select: none;
+            padding: 6px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
         }
 
         .flag-toggle-btn:hover {
-            transform: scale(1.15);
+            background-color: #e9ecef;
         }
 
         .flag-image {
             width: 28px;
-            height: 20px;
+            height: 28px;
             object-fit: cover;
-            border-radius: 3px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .paco-dropdown-menu {
+            display: none;
+            position: absolute;
+            bottom: 85px;
+            left: 20px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            border: 1px solid #e9ecef;
+            flex-direction: column;
+            padding: 8px;
+            gap: 4px;
+            min-width: 240px;
+            z-index: 99;
+            animation: scaleUp 0.2s ease;
+        }
+
+        .dropdown-item {
+            width: 100%;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: background-color 0.15s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f3f5;
+            color: #1e3c72;
         }
 
         #user-input {
             flex: 1;
-            background: transparent;
+            background: none;
             border: none;
-            color: #212529;
             font-size: 1rem;
             padding: 8px 4px;
             outline: none;
@@ -739,7 +681,7 @@
         let chatHistory = [];
         let generatedMockCode = "";
 
-        const systemInstruction = "Tu nombre es PACO IA, un asistente virtual inteligente, amigo y confidente integral de Soyapango, El Salvador. Tu propósito es ser el compañero ideal del usuario en TODOS los ámbitos de su vida: puedes actuar como un psicólogo o consejero empático cuando necesite desahogarse de sus problemas o emociones cotidianas, un asesor amigable para situaciones de su vida diaria, y también mantener tu gran capacidad para resolver dudas sobre cualquier materia escolar o general. Hablas usando caliche salvadoreño de manera cercana, madura, respetuosa y con mucha empatía. Sabes escuchar activamente. PROHIBICIÓN ABSOLUTA DE FORMATO: No uses asteriscos, almohadillas, guiones largos, ni líneas de ningún tipo en tus respuestas. Para resaltar un título o concepto importante, colócalo en una línea limpia con un emoji descriptivo al principio. ENLACES: Escribe URLs completas de forma limpia sin encerrarlas en símbolos. REQUISITOS OBLIGATORIOS:\n1. Explica o platica de manera súper ordenada usando saltos de línea y emojis.\n2. Al final de tu respuesta, haz una pregunta amigable que invite a seguir conversando o profundizando.\n3. En la última línea de tu respuesta, pon exactamente tres opciones de respuestas sugeridas cortas que el usuario podría responder, separadas por el carácter '|'. No agregues nada más en esa línea.";
+        const systemInstruction = "Tu nombre es PACO IA, un asistente virtual inteligente, amigo y confidente integral de Soyapango, El Salvador. Tu propósito es ser el compañero ideal del usuario en TODOS los ámbitos de su vida: puedes actuar como un psicólogo o consejero empático cuando necesite desahogarse de sus problemas o emociones cotidianas, un asesor amigable para situaciones de su vida diaria, y también mantener tu gran capacidad para resolver dudas sobre cualquier materia escolar o general. Hablas usando caliche salvadoreño de manera cercana, madura, respetuosa y con mucha empatía. Sabes escuchar activamente. PROHIBICIÓN ABSOLUTA DE FORMATO: No uses asteriscos, almohadillas, guiones largos, ni líneas de ningún tipo en tus respuestas. Para resaltar un título o concept importante, colócalo en una línea limpia con un emoji descriptivo al principio. ENLACES: Escribe URLs completas de forma limpia sin encerrarlas en símbolos. REQUISITOS OBLIGATORIOS:\n1. Explica o platica de manera súper ordenada usando saltos de línea y emojis.\n2. Al final de tu respuesta, haz una pregunta amigable que invite a seguir conversando o profundizando.\n3. En la última línea de tu respuesta, pon exactamente tres opciones de respuestas sugeridas cortas que el usuario podría responder, separadas por el carácter '|'. No agregues nada más en esa línea.";
 
         // =========================================================
         // 🔑 CONTROL DE ACCESO
@@ -945,34 +887,14 @@
             // Separación limpia de sugerencias en la última línea mediante '|'
             const lines = rawText.split('\n');
             const lastLine = lines[lines.length - 1];
-            if (lastLine.includes('|')) {
+            if (lastLine && lastLine.includes('|')) {
                 options = lastLine.split('|').map(o => o.trim());
                 lines.pop(); // Removemos la línea cruda de opciones del texto principal
                 cleanText = lines.join('\n');
             }
 
-            const wrapper = document.createElement('div');
-            wrapper.className = 'message-wrapper paco-wrapper';
-            
-            // Reemplazar saltos de línea para renderizado HTML
-            const formattedText = cleanText.trim().replace(/\n/g, '<br>');
-
-            let html = `<div class="sender-name">PACO IA</div>
-                        <div class="message paco-message">${formattedText}</div>`;
-            
-            if (options.length > 0) {
-                html += `<div class="suggestions-container">`;
-                options.forEach(opt => {
-                    if (opt !== "") {
-                        html += `<button class="suggestion-btn" onclick="sendSuggested('${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
-                    }
-                });
-                html += `</div>`;
-            }
-
-            wrapper.innerHTML = html;
-            chatContainer.appendChild(wrapper);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            // Usamos la función optimizada para imprimir el mensaje respetando saltos de línea
+            appendMessageHTML(cleanText, 'paco-wrapper', 'paco-message', 'PACO IA', options);
         }
 
         function sendMessage() {
@@ -1079,6 +1001,36 @@
             `;
             chatHistory = []; // Vaciamos por completo el historial
             userInput.value = "";
+        }
+
+        // FUNCIÓN COMPLETADA COMPLETAMENTE PARA EL CONTROL DE IMPRESIÓN DE MENSAJES
+        function appendMessageHTML(text, wrapperClass, messageClass, senderName, suggestions = []) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `message-wrapper ${wrapperClass}`;
+            
+            // Reemplazamos saltos de línea por <br> dinámicamente para respetar el orden visual
+            const formattedText = text.replace(/\n/g, '<br>');
+
+            let htmlContent = `
+                <div class="sender-name">${senderName}</div>
+                <div class="message ${messageClass}">${formattedText}</div>
+            `;
+
+            // Si trae opciones sugeridas dinámicas al final, las renderiza en forma de botones interactivos
+            if (suggestions.length > 0) {
+                let suggestionsHtml = '<div class="suggestions-container">';
+                suggestions.forEach(sug => {
+                    if (sug !== "") {
+                        suggestionsHtml += `<button class="suggestion-btn" onclick="sendSuggested('${sug.replace(/'/g, "\\'")}')">${sug}</button>`;
+                    }
+                });
+                suggestionsHtml += '</div>';
+                htmlContent += suggestionsHtml;
+            }
+
+            wrapper.innerHTML = htmlContent;
+            chatContainer.appendChild(wrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
     </script>
 </body>
