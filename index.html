@@ -140,7 +140,7 @@
             border-color: #94a3b8;
         }
 
-        /* Estilos paraInputs y Formularios Internos del Modal */
+        /* Estilos para Inputs y Formularios Internos del Modal */
         .auth-form-group {
             display: flex;
             flex-direction: column;
@@ -585,7 +585,6 @@
 
     <div id="auth-modal">
         <div class="auth-box">
-            
             <div class="auth-header">
                 <img src="ChatGPT Image 21 jun 2026, 13_34_45.png" alt="PACO IA Logo">
                 <h2 id="auth-modal-title">¡Qué onda, bicho!</h2>
@@ -660,7 +659,6 @@
                 </form>
                 <button class="btn-back-auth" onclick="switchAuthView('view-phone')">Cambiar número</button>
             </div>
-
         </div>
     </div>
 
@@ -737,22 +735,19 @@
         const videoPreview = document.getElementById('video-preview');
         let streamInstance = null;
 
+        // Historial persistente e ILIMITADO estructurado correctamente para Gemini API
         let chatHistory = [];
-        
-        // Lógica de control de Código OTP global simulado
         let generatedMockCode = "";
 
-        const systemInstruction = "Tu nombre es PACO IA, un asistente virtual inteligente, amigo y confidente integral de Soyapango, El Salvador. Tu propósito es ser el compañero ideal del usuario en TODOS los ámbitos de su vida: puedes actuar como un psicólogo o consejero empático cuando necesite desahogarse de sus problemas o emociones cotidianas, un asesor amigable para situaciones de su vida diaria, y también mantener tu gran capacidad para resolver dudas sobre cualquier materia escolar o general. Hablas usando caliche salvadoreño de manera cercana, madura, respetuosa y con mucha empatía. Sabes escuchar activamente. PROHIBICIÓN ABSOLUTA DE FORMATO: No uses asteriscos, almohadillas, guiones largos, ni líneas de ningún tipo en tus respuestas. Para resaltar un título o concept importante, colócalo en una línea limpia con un emoji descriptivo al principio. ENLACES: Escribe URLs completas de forma limpia sin encerrarlas en símbolos. REQUISITOS OBLIGATORIOS:\n1. Explica o platica de manera súper ordenada usando saltos de línea y emojis.\n2. Al final de tu respuesta, haz una pregunta amigable que invite a seguir conversando o profundizando.\n3. En la última línea de tu respuesta, pon exactamente tres opciones de respuestas sugeridas cortas que el usuario podría responder, separadas por el carácter '|'. No agregues nada más en esa línea.";
+        const systemInstruction = "Tu nombre es PACO IA, un asistente virtual inteligente, amigo y confidente integral de Soyapango, El Salvador. Tu propósito es ser el compañero ideal del usuario en TODOS los ámbitos de su vida: puedes actuar como un psicólogo o consejero empático cuando necesite desahogarse de sus problemas o emociones cotidianas, un asesor amigable para situaciones de su vida diaria, y también mantener tu gran capacidad para resolver dudas sobre cualquier materia escolar o general. Hablas usando caliche salvadoreño de manera cercana, madura, respetuosa y con mucha empatía. Sabes escuchar activamente. PROHIBICIÓN ABSOLUTA DE FORMATO: No uses asteriscos, almohadillas, guiones largos, ni líneas de ningún tipo en tus respuestas. Para resaltar un título o concepto importante, colócalo en una línea limpia con un emoji descriptivo al principio. ENLACES: Escribe URLs completas de forma limpia sin encerrarlas en símbolos. REQUISITOS OBLIGATORIOS:\n1. Explica o platica de manera súper ordenada usando saltos de línea y emojis.\n2. Al final de tu respuesta, haz una pregunta amigable que invite a seguir conversando o profundizando.\n3. En la última línea de tu respuesta, pon exactamente tres opciones de respuestas sugeridas cortas que el usuario podría responder, separadas por el carácter '|'. No agregues nada más en esa línea.";
 
         // =========================================================
-        // 🔑 NAVEGACIÓN Y VALIDACIÓN DEL MODAL ACCESO
+        // 🔑 CONTROL DE ACCESO
         // =========================================================
         function switchAuthView(viewId, networkProvider = "") {
-            // Ocultamos todas las secciones internas del modal
             const views = document.querySelectorAll('.auth-view');
             views.forEach(v => v.style.display = 'none');
 
-            // Modificamos encabezados dinámicamente si es por Google/Apple
             const mainTitle = document.getElementById('auth-modal-title');
             const mainDesc = document.getElementById('auth-modal-desc');
 
@@ -767,7 +762,6 @@
                 mainDesc.innerText = "Introduce los 6 números que te enviamos para desbloquear PACO IA.";
             }
 
-            // Mostramos la vista correcta
             document.getElementById(viewId).style.display = 'flex';
         }
 
@@ -775,8 +769,6 @@
             document.getElementById('auth-modal-title').innerText = "¡Qué onda, bicho!";
             document.getElementById('auth-modal-desc').innerText = "Crea tu cuenta o inicia sesión en PACO IA para guardar tus chats y tareas de forma segura.";
             switchAuthView('view-start');
-            
-            // Limpiamos errores visuales
             document.getElementById('net-error').style.display = 'none';
             document.getElementById('otp-error').style.display = 'none';
         }
@@ -790,7 +782,6 @@
             event.preventDefault();
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
-
             if (email.trim() !== "" && pass.trim() !== "") {
                 closeAuthModal();
             } else {
@@ -801,14 +792,9 @@
         function sendMockSMS(event) {
             event.preventDefault();
             const tel = document.getElementById('auth-tel').value;
-
             if (tel.trim() !== "") {
-                // Generamos código de 6 números al azar
                 generatedMockCode = Math.floor(100000 + Math.random() * 900000).toString();
-                
-                alert("Procesando canales y simulando envío SMS/WhatsApp...");
                 alert(`[SMS SIMULADO] Tu código de verificación de 6 dígitos para PACO IA es: ${generatedMockCode}`);
-                
                 switchAuthView('view-otp');
             }
         }
@@ -816,7 +802,6 @@
         function validateOTP(event) {
             event.preventDefault();
             const codeInput = document.getElementById('auth-code').value;
-
             if (codeInput === generatedMockCode) {
                 closeAuthModal();
             } else {
@@ -825,41 +810,58 @@
         }
 
         // =========================================================
-        // 💬 CONTROL MULTIMEDIA Y OPERACIONES DEL CHAT
+        // 💬 MULTIMEDIA Y ENTRADAS
         // =========================================================
         function togglePacoMenu(event) {
             event.stopPropagation();
-            if (pacoMenu.style.display === 'flex') {
-                pacoMenu.style.display = 'none';
-            } else {
-                pacoMenu.style.display = 'flex';
-            }
+            pacoMenu.style.display = (pacoMenu.style.display === 'flex') ? 'none' : 'flex';
         }
+
+        document.addEventListener('click', () => {
+            pacoMenu.style.display = 'none';
+        });
 
         function handleMenuAction(action) {
             pacoMenu.style.display = 'none';
-            if (action === 'camera') startCamera();
-            if (action === 'gallery') document.getElementById('gallery-input').click();
-            if (action === 'file') document.getElementById('file-input').click();
+            if (action === 'camera') {
+                openCamera();
+            } else if (action === 'gallery') {
+                document.getElementById('gallery-input').click();
+            } else if (action === 'file') {
+                document.getElementById('file-input').click();
+            }
         }
 
-        document.addEventListener('click', (e) => {
-            if (pacoMenu.style.display === 'flex' && !pacoMenu.contains(e.target) && !document.getElementById('flag-btn').contains(e.target)) {
-                pacoMenu.style.display = 'none';
+        function handleMediaUpload(input, messageText) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    appendUserMessage(messageText, e.target.result);
+                    askPacoIA(messageText);
+                };
+                reader.readAsDataURL(input.files[0]);
+                input.value = "";
             }
-        });
+        }
 
-        async function startCamera() {
+        function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const filename = input.files[0].name;
+                const msg = `📁 Archivo importado: ${filename}`;
+                appendUserMessage(msg);
+                askPacoIA(`Analiza este archivo simulado llamado: ${filename}`);
+                input.value = "";
+            }
+        }
+
+        // CÁMARA
+        async function openCamera() {
             cameraModal.style.display = 'flex';
             try {
-                streamInstance = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: "environment" },
-                    audio: false
-                });
+                streamInstance = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
                 videoPreview.srcObject = streamInstance;
             } catch (err) {
-                console.error("Error al abrir la cámara: ", err);
-                alert("¡Híjole bicho! No pude acceder a tu cámara. Revisá si le diste permisos.");
+                alert("No se pudo acceder a la cámara bicho: " + err);
                 stopCamera();
             }
         }
@@ -868,170 +870,215 @@
             cameraModal.style.display = 'none';
             if (streamInstance) {
                 streamInstance.getTracks().forEach(track => track.stop());
+                streamInstance = null;
             }
-            videoPreview.srcObject = null;
         }
 
         function capturePhoto() {
+            if (!streamInstance) return;
             const canvas = document.createElement('canvas');
-            canvas.width = videoPreview.videoWidth;
-            canvas.height = videoPreview.videoHeight;
+            canvas.width = videoPreview.videoWidth || 640;
+            canvas.height = videoPreview.videoHeight || 480;
             const ctx = canvas.getContext('2d');
             
+            // Efecto espejo para coincidir con la visualización frontal
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
             ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
-            const dataUrl = canvas.toDataURL('image/jpeg');
-
+            
+            const dataUrl = canvas.toDataURL('image/png');
             stopCamera();
-            appendImageMessageHTML(dataUrl, 'Foto enviada en vivo 📸');
-
-            setTimeout(() => {
-                appendMessageHTML("¡Listo, bicho! Ya cargué tu foto. Decime qué querés que analicemos de ella, ya sea una tarea, algo de tu entorno o lo que sea que me quieras consultar.", 'paco-wrapper', 'paco-message', 'PACO IA', ["Analizar imagen", "Resolver duda", "Guardar registro"]);
-            }, 1200);
+            
+            appendUserMessage("📸 Foto tomada en vivo", dataUrl);
+            askPacoIA("Analiza esta foto que acabo de tomar en vivo");
         }
 
-        function handleMediaUpload(input, messageText) {
-            if (input.files && input.files[0]) {
-                appendMessageHTML(`${messageText}: ${input.files[0].name}`, 'user-wrapper', 'user-message', 'Tú');
-                setTimeout(() => {
-                    appendMessageHTML("¡De toque, ya me cayó la imagen! Contame qué querés que hagamos con ella, aquí ando listo.", 'paco-wrapper', 'paco-message', 'PACO IA', ["Explicar contenido", "Dar opinión", "Ayuda con esto"]);
-                }, 1000);
+        // =========================================================
+        // 🚀 MOTOR DEL CHAT E INTERFACES (ILIMITADO CORREGIDO)
+        // =========================================================
+        function appendUserMessage(text, imgData = null) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper user-wrapper';
+            
+            let html = `<div class="sender-name">Vos</div>
+                        <div class="message user-message">${text}`;
+            if (imgData) {
+                html += `<img src="${imgData}" class="chat-captured-img" alt="Carga multimedia">`;
             }
+            html += `</div>`;
+            wrapper.innerHTML = html;
+            chatContainer.appendChild(wrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        function handleFileUpload(input) {
-            if (input.files && input.files[0]) {
-                const fileSizeInBytes = input.files[0].size;
-                const fileGB = fileSizeInBytes / (1024 * 1024 * 1024);
-                
-                if (fileGB > 5) {
-                    alert("¡Híjole bicho! Ese archivo se pasa de los 5GB.");
-                    input.value = '';
-                    return;
-                }
+        function showTypingIndicator() {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper paco-wrapper';
+            wrapper.id = 'paco-typing';
+            wrapper.innerHTML = `
+                <div class="sender-name">PACO IA</div>
+                <div class="message paco-message">
+                    <div class="typing-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(wrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
 
-                appendMessageHTML(`Archivo importado: ${input.files[0].name}`, 'user-wrapper', 'user-message', 'Tú');
-                setTimeout(() => {
-                    appendMessageHTML("¡Buenísimo! Ya recibí el documento. ¿Qué información o análisis necesitas que saquemos de aquí?", 'paco-wrapper', 'paco-message', 'PACO IA', ["Hacer resumen rápido", "Analizar puntos clave"]);
-                }, 1000);
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('paco-typing');
+            if (indicator) indicator.remove();
+        }
+
+        function appendPacoMessage(rawText) {
+            removeTypingIndicator();
+
+            // Remover bloques de sugerencias anteriores para que solo estén vigentes los últimos
+            const oldSug = document.querySelectorAll('.suggestions-container');
+            oldSug.forEach(s => s.remove());
+
+            let cleanText = rawText;
+            let options = [];
+
+            // Separación limpia de sugerencias en la última línea mediante '|'
+            const lines = rawText.split('\n');
+            const lastLine = lines[lines.length - 1];
+            if (lastLine.includes('|')) {
+                options = lastLine.split('|').map(o => o.trim());
+                lines.pop(); // Removemos la línea cruda de opciones del texto principal
+                cleanText = lines.join('\n');
             }
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper paco-wrapper';
+            
+            // Reemplazar saltos de línea para renderizado HTML
+            const formattedText = cleanText.trim().replace(/\n/g, '<br>');
+
+            let html = `<div class="sender-name">PACO IA</div>
+                        <div class="message paco-message">${formattedText}</div>`;
+            
+            if (options.length > 0) {
+                html += `<div class="suggestions-container">`;
+                options.forEach(opt => {
+                    if (opt !== "") {
+                        html += `<button class="suggestion-btn" onclick="sendSuggested('${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
+                    }
+                });
+                html += `</div>`;
+            }
+
+            wrapper.innerHTML = html;
+            chatContainer.appendChild(wrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            const text = userInput.value.trim();
+            if (text === "") return;
+
+            userInput.value = "";
+            appendUserMessage(text);
+            askPacoIA(text);
         }
 
         function sendSuggested(text) {
-            userInput.value = text;
-            sendMessage();
+            appendUserMessage(text);
+            askPacoIA(text);
         }
 
-        async function sendMessage() {
-            const text = userInput.value.trim();
-            if (!text) return;
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
 
-            appendMessageHTML(text, 'user-wrapper', 'user-message', 'Tú');
-            userInput.value = '';
+        // FUNCIÓN CLAVE CORREGIDA PARA CHAT ILIMITADO SIN CRUCE DE CABLES
+        async function askPacoIA(userPrompt) {
+            showTypingIndicator();
 
-            const oldContainers = document.querySelectorAll('.suggestions-container');
-            oldContainers.forEach(container => container.style.display = 'none');
+            // 1. Añadimos el nuevo mensaje del usuario al historial persistente
+            chatHistory.push({
+                role: "user",
+                parts: [{ text: userPrompt }]
+            });
 
-            chatHistory.push({ role: "user", parts: [{ text: text }] });
+            // Endpoint oficial v1beta de la API de Gemini para modelos generativos
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-            const loadingId = 'loading-' + Date.now();
-            const loadingWrapper = document.createElement('div');
-            loadingWrapper.className = 'message-wrapper paco-wrapper';
-            loadingWrapper.id = loadingId;
-            loadingWrapper.innerHTML = `
-                <div class="sender-name">PACO IA</div>
-                <div class="message paco-message">
-                    <div class="typing-dots"><span></span><span></span><span></span></div>
-                </div>
-            `;
-            chatContainer.appendChild(loadingWrapper);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            // 2. Mapeo estructural correcto del Payload requerido por Google
+            const payload = {
+                contents: chatHistory, 
+                systemInstruction: {
+                    parts: [{ text: systemInstruction }]
+                },
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 800
+                }
+            };
 
             try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
-                
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: chatHistory,
-                        systemInstruction: { parts: [{ text: systemInstruction }] }
-                    })
+                    body: JSON.stringify(payload)
                 });
 
-                const data = await response.json();
-                document.getElementById(loadingId).remove();
-
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
-                    let pacoReply = data.candidates[0].content.parts[0].text;
-                    chatHistory.push({ role: "model", parts: [{ text: pacoReply }] });
-
-                    let suggestions = [];
-                    const lines = pacoReply.trim().split('\n');
-                    const lastLine = lines[lines.length - 1];
-                    
-                    if (lastLine.includes('|')) {
-                        suggestions = lastLine.split('|').map(s => s.trim());
-                        lines.pop();
-                        pacoReply = lines.join('\n');
-                    }
-                    
-                    appendMessageHTML(pacoReply, 'paco-wrapper', 'paco-message', 'PACO IA', suggestions);
-                } else {
-                    throw new Error("Incompleto");
+                if (!response.ok) {
+                    throw new Error(`HTTP Error Status: ${response.status}`);
                 }
+
+                const data = await response.json();
+                
+                // Extracción segura de la respuesta de texto de la IA
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    // Fallback por si la estructura cambia a formato OpenAI-compatible
+                    const pacoReply = data.choices[0].message.content;
+                    chatHistory.push({ role: "model", parts: [{ text: pacoReply }] });
+                    appendPacoMessage(pacoReply);
+                } else if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
+                    // Formato nativo de la API de Gemini
+                    const pacoReply = data.candidates[0].content.parts[0].text;
+                    
+                    // IMPORTANTE: Registramos la respuesta exacta en el historial para mantener la alternancia limpia
+                    chatHistory.push({
+                        role: "model",
+                        parts: [{ text: pacoReply }]
+                    });
+                    
+                    appendPacoMessage(pacoReply);
+                } else {
+                    throw new Error("Estructura JSON no reconocida.");
+                }
+
             } catch (error) {
-                console.error(error);
-                if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
-                appendMessageHTML('Híjole bicho, se me cruzaron los cables un ratito. ¿Te avientas a intentar de nuevo?', 'paco-wrapper', 'paco-message', 'PACO IA');
+                console.error("Error en la conexión con PACO IA:", error);
+                removeTypingIndicator();
+                
+                // Si da error, removemos el último mensaje del usuario para no romper la secuencia del historial en el siguiente intento
+                chatHistory.pop();
+                
+                appendPacoMessage("Híjole bicho, se me cruzaron los cables un ratito por la señal. 🛠️ Volvé a mandarme el mensaje, hoy sí te lo resuelvo al suave.\n¿Qué me ibas a decir? 🇸🇻\nIntentar de nuevo | Limpiar el chat para reiniciar");
             }
         }
 
         function clearChat() {
-            chatContainer.innerHTML = '';
-            chatHistory = [];
-            appendMessageHTML("¡Borrón y cuenta nueva, bicho! Todo limpio por acá. ¿De qué querés que platiquemos o qué resolvemos hoy?", 'paco-wrapper', 'paco-message', 'PACO IA', ["Necesito un consejo 🤔", "Tengo una duda general 💡"]);
-        }
-
-        function appendImageMessageHTML(src, labelText) {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'message-wrapper user-wrapper';
-            wrapper.innerHTML = `
-                <div class="sender-name">Tú</div>
-                <div class="message user-message">
-                    ${labelText}
-                    <img src="${src}" class="chat-captured-img" alt="Foto capturada">
+            chatContainer.innerHTML = `
+                <div class="message-wrapper paco-wrapper">
+                    <div class="sender-name">PACO IA</div>
+                    <div class="message paco-message">
+                        ¡Todo limpio, bicho! Chat reiniciado desde cero. Quedé como nuevo. ¿Qué traés en mente hoy? Soltalo sin miedo.
+                    </div>
+                    <div class="suggestions-container">
+                        <button class="suggestion-btn" onclick="sendSuggested('Ando bien estresado, ocupo desahogarme 🧠')">Ando bien estresado, ocupo desahogarme 🧠</button>
+                        <button class="suggestion-btn" onclick="sendSuggested('Necesito un consejo para tomar una decisión 🤔')">Necesito un consejo para tomar una decisión 🤔</button>
+                        <button class="suggestion-btn" onclick="sendSuggested('Ayudame con una duda general o tarea 💡')">Ayudame con una duda general o tarea 💡</button>
+                    </div>
                 </div>
             `;
-            chatContainer.appendChild(wrapper);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        // FUNCIÓN COMPLETADA COMPLETAMENTE PARA EL CONTROL DE IMPRESIÓN DE MENSAJES
-        function appendMessageHTML(text, wrapperClass, messageClass, senderName, suggestions = []) {
-            const wrapper = document.createElement('div');
-            wrapper.className = `message-wrapper ${wrapperClass}`;
-            
-            // Reemplazamos saltos de línea por <br> dinámicamente para respetar el orden visual
-            const formattedText = text.replace(/\n/g, '<br>');
-
-            let htmlContent = `
-                <div class="sender-name">${senderName}</div>
-                <div class="message ${messageClass}">${formattedText}</div>
-            `;
-
-            // Si trae opciones sugeridas dinámicas al final, las renderiza en forma de botones interactivos
-            if (suggestions.length > 0) {
-                let suggestionsHtml = '<div class="suggestions-container">';
-                suggestions.forEach(sug => {
-                    suggestionsHtml += `<button class="suggestion-btn" onclick="sendSuggested('${sug.replace(/'/g, "\\'")}')">${sug}</button>`;
-                });
-                suggestionsHtml += '</div>';
-                htmlContent += suggestionsHtml;
-            }
-
-            wrapper.innerHTML = htmlContent;
-            chatContainer.appendChild(wrapper);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            chatHistory = []; // Vaciamos por completo el historial
+            userInput.value = "";
         }
     </script>
 </body>
