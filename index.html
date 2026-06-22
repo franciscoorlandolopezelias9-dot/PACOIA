@@ -396,7 +396,7 @@
             transform: translateY(-1px);
         }
 
-        /* 🛠️ BARRA DE ENTRADA CONTENEDORA DE MENÚ FLOTANTE */
+        /* 🛠️ BARRA DE ENTRADA */
         #input-container {
             padding: 20px;
             max-width: 850px;
@@ -598,7 +598,6 @@
                         </span>
                         Continuar con Google
                     </button>
-
                     <button class="auth-btn" onclick="switchAuthView('view-networks', 'Apple')">
                         <span class="auth-icon">
                             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
@@ -607,7 +606,6 @@
                         </span>
                         Continuar con Apple
                     </button>
-
                     <button class="auth-btn btn-phone" onclick="switchAuthView('view-phone')">
                         <span class="auth-icon">📱</span>
                         Usar Número de Celular
@@ -663,7 +661,7 @@
                 <h1>PACO IA</h1>
                 <div class="status-badge">
                     <div class="status-dot"></div>
-                    Tu compa en todo
+                    Conectado con Gemini 1.5
                 </div>
             </div>
         </div>
@@ -680,8 +678,8 @@
             </div>
             <div class="suggestions-container">
                 <button class="suggestion-btn" onclick="sendSuggested('Ando bien estresado, ocupo desahogarme 🧠')">Ando bien estresado, ocupo desahogarme 🧠</button>
-                <button class="suggestion-btn" onclick="sendSuggested('Necesito un consejo para tomar una decisión 🤔')">Necesito un consejo para tomar una decisión 🤔</button>
-                <button class="suggestion-btn" onclick="sendSuggested('Ayudame con una duda general o tarea 💡')">Ayudame con una duda general o tarea 💡</button>
+                <button class="suggestion-btn" onclick="sendSuggested('Necesito ayuda con unos ejercicios de mate 🧮')">Necesito ayuda con unos ejercicios de mate 🧮</button>
+                <button class="suggestion-btn" onclick="sendSuggested('Platiquemos un rato al suave o dame un consejo 🤔')">Platiquemos un rato al suave o dame un consejo 🤔</button>
             </div>
         </div>
     </div>
@@ -718,8 +716,8 @@
     </div>
 
     <script>
-        // Si tienes una llave de Google válida que empiece por AIzaSy, colócala aquí:
-        const API_KEY = "AQ.Ab8RN6L5JTpexJ-CvaSpM-ydIrWTBNT6L0AN29eoSCD61TcCbw"; 
+        // ⚠️ CAMBIA ESTE TEXTO POR TU API KEY REAL DE GOOGLE AI STUDIO (EMPIEZA CON AIzaSy)
+        const API_KEY = "AQ.Ab8RN6JzF5M8qmxsSy-ERDBePQZI48bXRzzg3brRR5sfFF8Zlw"; 
 
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
@@ -733,10 +731,11 @@
         let chatHistory = [];
         let generatedMockCode = "";
 
-        const systemInstruction = "Tu nombre es PACO IA, un asistente virtual inteligente, amigo y confidente integral de Soyapango, El Salvador. Tu propósito es ser el compañero ideal del usuario en TODOS los ámbitos de su vida...";
+        // Instrucción de sistema para que actúe con personalidad propia de El Salvador
+        const systemInstruction = "Tu nombre es PACO IA, un asistente virtual inteligente, amigo y confidente integral de Soyapango, El Salvador. Tu propósito es ser el compañero ideal del usuario en TODOS los ámbitos de su vida: académico, emocional y cotidiano. Habla con la jerga salvadoreña típica de forma natural, amigable y respetuosa ('bicho', 'al suave', 'de toque', 'qué onda'). Resuelve dudas escolares paso a paso de forma clara, y si te piden consejos o desahogo, sé empático y comprensivo.";
 
         // =========================================================
-        // 🔑 NAVEGACIÓN Y VALIDACIÓN DEL MODAL ACCESO
+        // 🔑 CONTROL DE ACCESO (MODAL AUTOMÁTICO)
         // =========================================================
         function switchAuthView(viewId, networkProvider = "") {
             const views = document.querySelectorAll('.auth-view');
@@ -788,8 +787,7 @@
             const tel = document.getElementById('auth-tel').value;
             if (tel.trim() !== "") {
                 generatedMockCode = Math.floor(100000 + Math.random() * 900000).toString();
-                alert("Procesando canales y simulando envío SMS/WhatsApp...");
-                alert(`[SMS SIMULADO] Tu código de verificación de 6 dígitos para PACO IA es: ${generatedMockCode}`);
+                alert(`[SMS SIMULADO] Tu código de verificación para PACO IA es: ${generatedMockCode}`);
                 switchAuthView('view-otp');
             }
         }
@@ -805,7 +803,7 @@
         }
 
         // =========================================================
-        // 💬 CONTROL MULTIMEDIA Y OPERACIONES DEL CHAT
+        // 💬 MULTIMEDIA Y MANEJO DEL CHAT REAL
         // =========================================================
         function togglePacoMenu(event) {
             event.stopPropagation();
@@ -834,7 +832,6 @@
                 });
                 videoPreview.srcObject = streamInstance;
             } catch (err) {
-                console.error("Error al abrir la cámara: ", err);
                 alert("¡Híjole bicho! No pude acceder a tu cámara. Revisá si le diste permisos.");
                 stopCamera();
             }
@@ -860,7 +857,7 @@
             appendImageMessageHTML(dataUrl, 'Foto enviada en vivo 📸');
 
             setTimeout(() => {
-                appendMessageHTML("¡Listo, bicho! Ya cargué tu foto. Decime qué quieres que analicemos, aquí ando listo.", 'paco-wrapper', 'paco-message', 'PACO IA', ["Explicar contenido 🧐", "Dar opinión 👍", "Ayuda con esto 💡"]);
+                appendMessageHTML("¡Listo, bicho! Ya cargué tu foto. Contame qué querés que analicemos en el chat.", 'paco-wrapper', 'paco-message', 'PACO IA');
             }, 1200);
         }
 
@@ -868,7 +865,7 @@
             if (input.files && input.files[0]) {
                 appendMessageHTML(`${messageText}: ${input.files[0].name}`, 'user-wrapper', 'user-message', 'Tú');
                 setTimeout(() => {
-                    appendMessageHTML("¡De toque, ya me cayó la imagen! Contame qué querés que hagamos con ella.", 'paco-wrapper', 'paco-message', 'PACO IA', ["Explicar contenido 🧐", "Dar opinión 👍", "Ayuda con esto 💡"]);
+                    appendMessageHTML("¡De toque, ya me cayó la imagen! Decime qué hacemos con ella.", 'paco-wrapper', 'paco-message', 'PACO IA');
                 }, 1000);
             }
         }
@@ -879,14 +876,14 @@
                 const fileGB = fileSizeInBytes / (1024 * 1024 * 1024);
                 
                 if (fileGB > 5) {
-                    alert("¡Híjole bicho! Ese archivo se pasa de los 5GB.");
+                    alert("¡Híjole bicho! Ese archivo se pasa de los 5GB autorizados.");
                     input.value = '';
                     return;
                 }
 
                 appendMessageHTML(`Archivo importado: ${input.files[0].name}`, 'user-wrapper', 'user-message', 'Tú');
                 setTimeout(() => {
-                    appendMessageHTML("¡Buenísimo! Ya recibí el documento bicho. ¿Qué información sacamos de aquí?", 'paco-wrapper', 'paco-message', 'PACO IA', ["Hacer resumen rápido 📝", "Analizar puntos clave 🎯"]);
+                    appendMessageHTML("¡Buenísimo! Ya recibí el documento bicho. ¿Qué información querés que analice?", 'paco-wrapper', 'paco-message', 'PACO IA');
                 }, 1000);
             }
         }
@@ -896,33 +893,25 @@
             sendMessage();
         }
 
-        // 🧠 FALLBACK LOCAL INTELIGENTE PARA GARANTIZAR RESPUESTA SIEMPRE
-        function getMockPacoResponse(text) {
-            const lowText = text.toLowerCase();
-            if (lowText.includes('estresado') || lowText.includes('desahogarme') || lowText.includes('triste')) {
-                return "¡Ay bicho, respirá hondo! Calma, acordate que no estás solo en esta vida. Soltá todo lo que traés en el pecho, contame bien qué te pasó y aquí vemos cómo nos organizamos para resolverlo al suave.\n¿Qué es lo que te tiene más preocupado ahorita?\nContarte todo el chime 🗣️ | Es por puro estudio/trabajo 📑 | Solo ocupo distraerme 🎮";
-            }
-            if (lowText.includes('consejo') || lowText.includes('decisión')) {
-                return "A ver bicho, contame bien los caminos que tenés en mente. Pensemos con la cabeza fría para no cajetearla. Yo te apoyo a evaluar los pros y los contras sin rodeos.\n¿De qué tipo es la decisión que vas a tomar?\nEs algo personal/amoroso ❤️ | Es sobre mi futuro o estudios 🚀 | Es un problema con alguien 🤝";
-            }
-            if (lowText.includes('tarea') || lowText.includes('duda') || lowText.includes('analizar')) {
-                return "¡Dále de un solo bicho! Desenvainá la pregunta o decime qué materia te está quebrando la cabeza. Aquí la desarmamos paso a paso para que le entendás rápido.\n¿Qué materia o duda revisamos?\nResolver un ejercicio 🧮 | Explicarme un concepto 🧠 | Revisar un texto 📝";
-            }
-            return "¡Qué onda bicho! Te escucho fuerte y claro. Sabés que conmigo podés platicar al suave de lo que querrás, ya sea para pedirme un paro con los estudios o para desahogarte de los problemas de la vida diaria.\n¿Por dónde querés que empecemos a platicar hoy?\nNecesito un consejo 🤔 | Tengo una duda o tarea 💡 | Solo quiero platicar un rato 💬";
-        }
-
+        // =========================================================
+        // 📡 CONEXIÓN DIRECTA A LA INTELIGENCIA ARTIFICIAL DE GEMINI
+        // =========================================================
         async function sendMessage() {
             const text = userInput.value.trim();
             if (!text) return;
 
+            // Mostrar mensaje del usuario en pantalla
             appendMessageHTML(text, 'user-wrapper', 'user-message', 'Tú');
             userInput.value = '';
 
+            // Ocultar botones de sugerencias anteriores
             const oldContainers = document.querySelectorAll('.suggestions-container');
             oldContainers.forEach(container => container.style.display = 'none');
 
+            // Guardar en el historial de conversación en formato oficial de Gemini
             chatHistory.push({ role: "user", parts: [{ text: text }] });
 
+            // Mostrar puntos de carga (animación de que está pensando)
             const loadingId = 'loading-' + Date.now();
             const loadingWrapper = document.createElement('div');
             loadingWrapper.className = 'message-wrapper paco-wrapper';
@@ -937,7 +926,7 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
-                // Se corrigió el modelo a la versión estable de producción para evitar errores
+                // Endpoint directo del modelo estable e inteligente de Google
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
                 
                 const response = await fetch(url, {
@@ -949,57 +938,36 @@
                     })
                 });
 
-                if (!response.ok) throw new Error("API Key inválida o error de red");
+                if (!response.ok) throw new Error("Llave de API inválida o error de conexión.");
 
                 const data = await response.json();
+                
+                // Remover animación de carga
                 if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
 
                 if (data.candidates && data.candidates[0].content.parts[0].text) {
                     let pacoReply = data.candidates[0].content.parts[0].text;
+                    
+                    // Guardar respuesta del modelo en memoria para mantener el hilo de la plática
                     chatHistory.push({ role: "model", parts: [{ text: pacoReply }] });
 
-                    let suggestions = [];
-                    const lines = pacoReply.trim().split('\n');
-                    const lastLine = lines[lines.length - 1];
-                    
-                    if (lastLine.includes('|')) {
-                        suggestions = lastLine.split('|').map(s => s.trim());
-                        lines.pop();
-                        pacoReply = lines.join('\n');
-                    }
-                    appendMessageHTML(pacoReply, 'paco-wrapper', 'paco-message', 'PACO IA', suggestions);
+                    // Imprimir respuesta inteligente en el chat
+                    appendMessageHTML(pacoReply, 'paco-wrapper', 'paco-message', 'PACO IA');
                 } else {
-                    throw new Error("Respuesta incompleta");
+                    throw new Error("Respuesta vacía");
                 }
             } catch (error) {
-                console.warn("Usando Fallback Local debido a: ", error.message);
-                
-                // Remueve el indicador de carga
                 if(document.getElementById(loadingId)) document.getElementById(loadingId).remove();
                 
-                // Obtiene la respuesta simulada e interactiva del fallback
-                let mockReply = getMockPacoResponse(text);
-                chatHistory.push({ role: "model", parts: [{ text: mockReply }] });
-
-                let suggestions = [];
-                const lines = mockReply.trim().split('\n');
-                const lastLine = lines[lines.length - 1];
-                
-                if (lastLine.includes('|')) {
-                    suggestions = lastLine.split('|').map(s => s.trim());
-                    lines.pop();
-                    mockReply = lines.join('\n');
-                }
-                
-                // Imprime la respuesta perfectamente
-                appendMessageHTML(mockReply, 'paco-wrapper', 'paco-message', 'PACO IA', suggestions);
+                // Mensaje en caso de que la API KEY siga vacía o incorrecta
+                appendMessageHTML("¡Híjole bicho! Se me cruzaron los cables porque no tenés una **API Key real configurada** en la línea 326 de tu código. Poné una llave válida de Google AI Studio para que pueda responderte de forma general y libre como yo.", 'paco-wrapper', 'paco-message', 'PACO IA');
             }
         }
 
         function clearChat() {
             chatContainer.innerHTML = '';
             chatHistory = [];
-            appendMessageHTML("¡Borrón y cuenta nueva, bicho! Todo limpio por acá. ¿De qué querés que platiquemos o qué resolvemos hoy?", 'paco-wrapper', 'paco-message', 'PACO IA', ["Necesito un consejo 🤔", "Tengo una duda general 💡"]);
+            appendMessageHTML("¡Borrón y cuenta nueva, bicho! Todo limpio por acá. ¿De qué querés que platiquemos o qué resolvemos hoy?", 'paco-wrapper', 'paco-message', 'PACO IA');
         }
 
         function appendImageMessageHTML(src, labelText) {
@@ -1016,27 +984,16 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        function appendMessageHTML(text, wrapperClass, messageClass, senderName, suggestions = []) {
+        function appendMessageHTML(text, wrapperClass, messageClass, senderName) {
             const wrapper = document.createElement('div');
             wrapper.className = `message-wrapper ${wrapperClass}`;
             
             const formattedText = text.replace(/\n/g, '<br>');
 
-            let htmlContent = `
+            wrapper.innerHTML = `
                 <div class="sender-name">${senderName}</div>
                 <div class="message ${messageClass}">${formattedText}</div>
             `;
-
-            if (suggestions.length > 0) {
-                let suggestionsHtml = '<div class="suggestions-container">';
-                suggestions.forEach(sug => {
-                    suggestionsHtml += `<button class="suggestion-btn" onclick="sendSuggested('${sug.replace(/'/g, "\\'")}')">${sug}</button>`;
-                });
-                suggestionsHtml += '</div>';
-                htmlContent += suggestionsHtml;
-            }
-
-            wrapper.innerHTML = htmlContent;
             chatContainer.appendChild(wrapper);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
